@@ -1,4 +1,10 @@
-# EEG Bandpower:
+---
+title: EEG Bandpower
+date: 2024-06-25 12:00:00 +0530
+categories: [EEG, Task]
+tags: [eeg, task]
+---
+
 Electroencephalography (EEG) measures electrical activity in the brain
 using electrodes placed on the scalp. EEG signals provide insights into
 brain function and are used in various applications, including clinical
@@ -108,8 +114,7 @@ For the given data output was as follows:\
 Absolute Bandpower: Delta: 192.1939 µV\^2 Theta: 33.5008 µV\^2 Alpha:
 16.7026 µV\^2 Beta: 4.7886 µV\^2 Relative Bandpower: Delta: 0.4711
 Theta: 0.0821 Alpha: 0.0409 Beta: 0.0117 The frequency band with the
-highest relative bandpower is: Delta ![Screenshot 2024-06-26
-164857](https://github.com/KedarAthrey/mini-projects/assets/150422972/d54a8989-e692-4856-aafd-c11c747936ba){width="953"}
+highest relative bandpower is: Delta ![](/assets/img/post_img/graph.png)
 
 ## Applications
 
@@ -131,7 +136,7 @@ sns.set(font_scale=1.2)
 
 
 # extract EEG from file
-data_file = r"C:\Users\Admin\PycharmProjects\PostmanNeuroT1\eeg-data.txt"
+data_file = r"eeg-data.txt"
 sfreq = 100
 win = 4
 # load EEG
