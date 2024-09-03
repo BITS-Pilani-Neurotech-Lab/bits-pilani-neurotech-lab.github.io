@@ -1,5 +1,6 @@
 ---
 title: Pairwise sequence alignment
+author: sankalp
 date: 2024-07-02 12:00:00 +0530
 categories: [Bioinfomatics, Task]
 tags: [bioinformatics, alignment, task]

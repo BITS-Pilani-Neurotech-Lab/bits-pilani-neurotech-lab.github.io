@@ -1,5 +1,6 @@
 ---
 title: EEG Bandpower
+author: kedar
 date: 2024-06-25 12:00:00 +0530
 categories: [EEG, Task]
 tags: [eeg, task]
