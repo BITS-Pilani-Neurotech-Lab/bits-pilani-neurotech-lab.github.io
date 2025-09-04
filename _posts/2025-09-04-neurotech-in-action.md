@@ -85,6 +85,6 @@ This is how the P300 is processed.
 
 [https://www.sciencedirect.com/topics/computer-science/linear-discriminant-analysis](https://www.sciencedirect.com/topics/computer-science/linear-discriminant-analysis)
 
-[Linear Discriminant Analysis for Machine Learning \-](https://machinelearningmastery.com/linear-discriminant-analysis-for-machine-learning/?utm_source=chatgpt.com) [MachineLearningMastery.com](http://MachineLearningMastery.com)
+[Linear Discriminant Analysis for Machine Learning \-](https://machinelearningmastery.com/linear-discriminant-analysis-for-machine-learning)
 
 
