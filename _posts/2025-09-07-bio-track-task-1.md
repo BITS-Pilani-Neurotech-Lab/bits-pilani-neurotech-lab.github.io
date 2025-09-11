@@ -24,7 +24,8 @@ The SNP frequency matrix required must look something like this, in structure.
 ## Submission
 Make a report (Google docs/latex) detailing the process you used to identify SNPs and your analysis of the SNPs identified in the sequences. If you used any programming in your submission, attach links to any relevant scripts. Please also list the external software tools you used in your task.
 
-**Deadline: 11th September EOD**
+**Deadline: 12th September EOD** <br>
+**Submission link: [Google form](https://forms.gle/QorPy9CbjBrFkTJ18)**
 
 The relevant files are linked below:
 1. [reference.fasta](/assets/data/reference.fasta)
