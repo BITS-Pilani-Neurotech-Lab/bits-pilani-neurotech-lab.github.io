@@ -1,64 +1,138 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+
+// Tile positions aligned to a strict grid with 15px uniform gaps
+const illustrationCards = [
+  {
+    // Doodle 1
+    src: "/doodle one.png", 
+    alt: "Neurotech Labs custom illustration one",
+    className: "absolute top-[21px] left-[15px] w-[484px] h-[254px] rounded-[40px] object-cover object-right-top",
+  },
+  {
+    // Doodle 2
+    src: "/doodle two.png",
+    alt: "Neurotech Labs custom illustration two",
+    className: "absolute top-[527px] left-[941px] w-[484px] h-[474px] rounded-[40px] object-cover object-top",
+  },
+  {
+    // Doodle 3
+    src: "/doodle three.png",
+    alt: "Neurotech Labs custom illustration three",
+    className: "absolute top-[527px] left-[15px] w-[484px] h-[474px] rounded-[40px] object-cover object-left-top",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="relative w-full min-h-screen bg-black overflow-hidden">
+      {/* Background MP4 Video — Pink Tint + Scaled Down to Reveal Brain Detail */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Pink Blend Overlay */}
+        <div className="absolute inset-0 bg-pink-500/3 z-10 mix-blend-screen" />
+
+        {/* Video: Scaled down using object-contain and scale-100 */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-contain rotate-90 scale-105 opacity-85 grayscale contrast-120"
+        >
+          <source src="/background.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      {/* Main Grid Container Layered Above Video */}
+      <main
+        className="relative z-10 min-h-[1301px] w-[1440px] mx-auto overflow-hidden font-sans"
+        aria-label="Neurotech Labs, BITS Pilani"
+      >
+        {/* Map through illustration cards */}
+        {illustrationCards.map((illustration) => (
+          <img
+            key={illustration.src}
+            className={illustration.className}
+            alt={illustration.alt}
+            src={illustration.src}
+          />
+        ))}
+
+        {/* "hi!" intro tile */}
+        <Link href="/about" className="block">
+          <header className="group absolute top-[21px] left-[514px] h-[491px] w-[572px] rounded-[40px] bg-[#787878]/70 backdrop-blur-sm p-10 flex flex-col justify-end overflow-hidden cursor-pointer transition-all duration-300">
+            <h1 className="relative z-0 font-bold text-[56px] leading-[1.1] tracking-tight text-white transition-colors duration-300 group-hover:text-white">
+              hi!
+              <br />
+              we&apos;re neurotech labs, bits pilani
+            </h1>
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/10 group-hover:backdrop-blur-md group-hover:border group-hover:border-white/30 group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-2xl" />
+          </header>
+        </Link>
+
+        {/* Recruitment tile */}
+        <Link href="/recruitment" className="block">
+          <section
+            className="group absolute top-[290px] left-[15px] h-[222px] w-[484px] rounded-[40px] bg-[#c1c1c1]/70 backdrop-blur-sm p-8 flex items-end justify-end overflow-hidden cursor-pointer transition-all duration-300"
+            aria-labelledby="recruitment-heading"
+          >
+            <h2
+              id="recruitment-heading"
+              className="relative z-0 font-bold text-[50px] leading-none text-white transition-colors duration-300 group-hover:text-white"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              recruitment
+            </h2>
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/10 group-hover:backdrop-blur-md group-hover:border group-hover:border-white/30 group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-2xl" />
+          </section>
+        </Link>
+
+        {/* Demos tile */}
+        <Link href="/demos" className="block">
+          <section
+            className="group absolute top-[21px] left-[1101px] h-[491px] w-[324px] rounded-[40px] bg-[#c1c1c1]/70 backdrop-blur-sm p-8 flex items-end overflow-hidden cursor-pointer transition-all duration-300"
+            aria-labelledby="demos-heading"
+          >
+            <h2
+              id="demos-heading"
+              className="relative z-0 font-bold text-[50px] leading-none text-white transition-colors duration-300 group-hover:text-white"
             >
-              Learning
-            </a>{" "}
-            center.
+              demos
+            </h2>
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/10 group-hover:backdrop-blur-md group-hover:border group-hover:border-white/30 group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-2xl" />
+          </section>
+        </Link>
+
+        {/* Pieces tile */}
+        <Link href="/pieces" className="block">
+          <section
+            className="group absolute top-[527px] left-[514px] h-[474px] w-[412px] rounded-[40px] bg-[#787878]/70 backdrop-blur-sm p-8 flex items-start justify-end overflow-hidden cursor-pointer transition-all duration-300"
+            aria-labelledby="pieces-heading"
+          >
+            <h2
+              id="pieces-heading"
+              className="relative z-0 font-bold text-[50px] leading-none text-white transition-colors duration-300 group-hover:text-white"
+            >
+              pieces
+            </h2>
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/10 group-hover:backdrop-blur-md group-hover:border group-hover:border-white/30 group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-2xl" />
+          </section>
+        </Link>
+
+        {/* Footer */}
+        <footer className="absolute top-[1080px] left-[528px] w-[383px] flex flex-col items-center text-center pb-10">
+          <img
+            className="h-28 w-28 aspect-square object-cover mb-3"
+            alt="Neurotech Labs logo"
+            src="https://c.animaapp.com/2Fdanjhz/img/image-1@2x.png"
+          />
+          <p className="text-xl font-medium leading-snug text-white">
+            Neurotech Labs, BITS Pilani
+            <br />
+            <span className="text-zinc-300 text-lg">2026</span>
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </footer>
       </main>
     </div>
   );
