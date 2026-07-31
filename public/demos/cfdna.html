@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cfDNA Passport — Tissue Origin Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f4f2;
+    --surface: #ffffff;
+    --surface2: #fafaf9;
+    --border: #dcdcd8;
+    --border2: #c4c4be;
+    --text: #2a2a28;
+    --text-dim: #8a8a82;
+    --text-bright: #14140f;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Source Serif 4', Georgia, serif;
+    --cyan: #2b6e8f;
+    --cyan-dim: #1f5470;
+    --amber: #b8742a;
+    --amber-dim: #92591e;
+    --rose: #a8333f;
+    --green: #3a7a5e;
+    --purple: #5c5680;
+    --glow-cyan: 0 0 0 rgba(0,0,0,0);
+    --glow-amber: 0 0 0 rgba(0,0,0,0);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .logo-title {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-bright);
+    letter-spacing: 0.04em;
+  }
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+    border: 1px solid rgba(43,110,143,0.35);
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-columns: 200px 1fr 280px;
+    grid-template-rows: 1fr;
+    height: calc(100vh - 52px);
+    overflow: hidden;
+  }
+
+  /* ── SCENARIO PANEL ── */
+  .scenario-panel {
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .panel-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 16px 8px;
+  }
+  .scenario-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .scenario-btn:hover { background: var(--surface2); }
+  .scenario-btn.active {
+    background: var(--surface2);
+    border-left-color: var(--cyan);
+  }
+  .scenario-btn.active .s-name { color: var(--cyan); }
+  .s-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .s-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .s-pill {
+    display: inline-block;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+  .pill-healthy { background: rgba(0,232,160,0.12); color: var(--green); }
+  .pill-cancer  { background: rgba(255,68,102,0.12); color: var(--rose); }
+  .pill-clinical { background: rgba(153,102,255,0.12); color: var(--purple); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 16px;
+  }
+
+  /* ── BODY MAP CENTER ── */
+  .body-map-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 55%, #ffffff 0%, var(--bg) 75%);
+  }
+
+  .scenario-title-area {
+    flex-shrink: 0;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .scenario-main-title {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-bright);
+    letter-spacing: 0.04em;
+  }
+  .scenario-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .body-svg-wrap {
+    position: relative;
+    width: 260px;
+    flex-shrink: 0;
+  }
+
+  /* organ hover tooltip */
+  .organ-tooltip {
+    position: absolute;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+    transform: translateX(-50%);
+    display: none;
+  }
+  .organ-tooltip.visible { display: block; }
+  .organ-tooltip strong { color: var(--cyan); }
+  .organ-tooltip .t-pct { font-size: 15px; color: var(--text-bright); }
+
+  /* ── BODY SVG ORGAN COLORS ── */
+  .organ-region {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .organ-region:hover { opacity: 0.85; }
+
+  /* ── SIDE PANEL ── */
+  .side-panel {
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .side-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+  .side-tab {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .side-tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  .side-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
+
+  /* ── TISSUE BARS ── */
+  .tissue-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,41,64,0.6);
+  }
+  .tissue-row:last-child { border-bottom: none; }
+  .tissue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tissue-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .tissue-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: right;
+  }
+  .tissue-bar-bg {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .tissue-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── BLOOD CELL SECTION ── */
+  .blood-section-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 12px 0 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── COMPARE TAB ── */
+  .compare-group { margin-bottom: 16px; }
+  .compare-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+  .compare-tissue { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .compare-bar-wrap { position: relative; height: 12px; display: flex; align-items: center; }
+  .compare-bar {
+    height: 6px;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 1px;
+  }
+  .compare-bar.healthy { background: var(--green); }
+  .compare-bar.scenario { background: var(--cyan); }
+  .compare-pct {
+    font-size: 9px;
+    position: absolute;
+    right: 2px;
+    color: var(--text-dim);
+  }
+
+  /* ── INFO TAB ── */
+  .info-section { margin-bottom: 16px; }
+  .info-heading {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--cyan);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .info-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .info-cite {
+    font-size: 10px;
+    color: rgba(90,106,138,0.6);
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 8px;
+    font-family: var(--mono);
+    line-height: 1.5;
+  }
+
+  /* ── SAMPLE SELECTOR ── */
+  .sample-selector {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .sample-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sample-select {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    max-width: 220px;
+    outline: none;
+  }
+  .sample-select option { background: var(--surface2); }
+  .sample-select:focus { border-color: var(--cyan); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ── GLOW ANIMATION ── */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  /* islet transplant timeline */
+  .timeline-wrap {
+    padding: 8px 0;
+  }
+  .timeline-step {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 4px 0;
+  }
+  .timeline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .timeline-dot.pre { background: var(--text-dim); }
+  .timeline-dot.post1 { background: var(--cyan); }
+  .timeline-dot.post2 { background: var(--amber); }
+  .timeline-text { font-size: 10px; color: var(--text-dim); }
+  .timeline-text strong { color: var(--text); }
+
+  .no-data-msg {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 24px 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-title">cfDNA Passport</span>
+    <span class="logo-sub" id="headerScenario">Healthy Donor</span>
+  </div>
+  <span class="header-badge">Moss et al. 2018 · GSE122126</span>
+</header>
+
+<div class="app">
+
+  <!-- SCENARIO PANEL -->
+  <div class="scenario-panel">
+    <div class="panel-label">Scenarios</div>
+
+    <button class="scenario-btn active" onclick="setScenario('healthy')">
+      <span class="s-name">Healthy</span>
+      <span class="s-sub">12 donors</span>
+      <span class="s-pill pill-healthy">BASELINE</span>
+    </button>
+
+    <div class="divider"></div>
+    <div class="panel-label" style="padding-top:8px">Cancer</div>
+
+    <button class="scenario-btn" onclick="setScenario('colon_cancer')">
+      <span class="s-name">Colon Cancer</span>
+      <span class="s-sub">4 samples</span>
+      <span class="s-pill pill-cancer">CRC</span>
+    </button>
+    <button class="scenario-btn" onclick="setScenario('lung_cancer')">
+      <span class="s-name">Lung Cancer</span>
+      <span class="s-sub">4 samples</span>
+      <span class="s-pill pill-cancer">NSCLC</span>
+    </button>
+    <button class="scenario-btn" onclick="setScenario('breast_cancer')">
+      <span class="s-name">Breast Cancer</span>
+      <span class="s-sub">3 samples</span>
+      <span class="s-pill pill-cancer">BCA</span>
+    </button>
+
+    <div class="divider"></div>
+    <div class="panel-label" style="padding-top:8px">Clinical</div>
+
+    <button class="scenario-btn" onclick="setScenario('sepsis')">
+      <span class="s-name">Sepsis</span>
+      <span class="s-sub">22 samples</span>
+      <span class="s-pill pill-clinical">ICU</span>
+    </button>
+    <button class="scenario-btn" onclick="setScenario('islet_transplant')">
+      <span class="s-name">Islet Transplant</span>
+      <span class="s-sub">9 samples · 3 time points</span>
+      <span class="s-pill pill-clinical">TRANSPLANT</span>
+    </button>
+  </div>
+
+  <!-- BODY MAP -->
+  <div class="body-map-area">
+    <div class="scenario-title-area">
+      <div class="scenario-main-title" id="mainTitle" style="display:none">Healthy Donor</div>
+      <div class="scenario-desc" id="mainDesc">Plasma cfDNA from 12 healthy individuals. Blood and erythrocyte progenitors dominate; organ-specific signals are low but detectable.</div>
+    </div>
+
+    <div class="body-svg-wrap">
+      <div class="organ-tooltip" id="organTooltip"></div>
+      <svg id="bodySvg" viewBox="0 0 320 620" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+        <defs>
+          <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-strong" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+<image id="body-photo"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       href="https://res.cloudinary.com/w6yh1jex/image/upload/f_auto,q_auto/03845b60-cef5-40dc-8864-3517a1ae34c5_v28ta1"
+       xlink:href="https://res.cloudinary.com/w6yh1jex/image/upload/f_auto,q_auto/03845b60-cef5-40dc-8864-3517a1ae34c5_v28ta1"
+       x="0"
+       y="0"
+       width="320"
+       height="620"
+       preserveAspectRatio="xMidYMid slice"
+       opacity="0.92" />
+        <!-- ══ BODY SILHOUETTE (translucent skin) — disabled, using photo above ══ -->
+        <g id="body-fill" fill="#7a7a72" opacity="0.045" style="display:none">
+          <ellipse cx="160" cy="56" rx="38" ry="46"/>
+          <rect x="143" y="96" width="34" height="26" rx="8"/>
+          <path d="M96,124 Q72,150 68,250 Q66,310 80,380 L240,380 Q254,310 252,250 Q248,150 224,124
+                   Q200,116 160,114 Q120,116 96,124 Z"/>
+          <path d="M96,128 Q56,158 48,250 Q45,290 56,330 L74,326 Q66,290 70,250 Q76,165 108,138 Z"/>
+          <path d="M224,128 Q264,158 272,250 Q275,290 264,330 L246,326 Q254,290 250,250 Q244,165 212,138 Z"/>
+          <path d="M114,376 Q106,450 104,520 Q102,565 108,600 L138,600 Q135,565 137,520 Q139,450 138,376 Z"/>
+          <path d="M206,376 Q214,450 216,520 Q218,565 212,600 L182,600 Q185,565 183,520 Q181,450 182,376 Z"/>
+        </g>
+
+        <!-- ══ SKELETAL HINT (faint bone structure, X-ray style) ══ -->
+        <g id="skeleton-hint" fill="none" stroke="#a8a89e" stroke-width="0.8" opacity="0.5" style="display:none">
+          <!-- skull -->
+          <ellipse cx="160" cy="50" rx="22" ry="28"/>
+          <path d="M148,68 Q160,76 172,68" />
+          <!-- spine -->
+          <path d="M160,118 L160,378" stroke-dasharray="3,3"/>
+          <!-- ribcage -->
+          <path d="M126,148 Q160,140 194,148 Q200,170 198,200 Q196,222 188,238 Q160,248 132,238 Q124,222 122,200 Q120,170 126,148 Z"/>
+          <path d="M132,158 Q160,152 188,158 M130,172 Q160,166 190,172 M129,186 Q160,180 191,186 M129,200 Q160,196 191,200 M131,214 Q160,210 189,214"/>
+          <!-- clavicle -->
+          <path d="M126,128 Q160,122 194,128"/>
+          <!-- pelvis -->
+          <path d="M124,330 Q160,322 196,330 Q200,348 188,366 Q160,374 132,366 Q120,348 124,330 Z"/>
+          <!-- arm bones -->
+          <path d="M100,140 L62,250 M62,250 L52,322" stroke-width="0.6"/>
+          <path d="M220,140 L258,250 M258,250 L268,322" stroke-width="0.6"/>
+          <!-- leg bones -->
+          <path d="M132,380 L126,590 M188,380 L194,590" stroke-width="0.6"/>
+          <ellipse cx="126" cy="478" rx="9" ry="6"/>
+          <ellipse cx="194" cy="478" rx="9" ry="6"/>
+        </g>
+
+        <!-- ══ BODY OUTLINE (contour) ══ -->
+        <g id="body-outline" fill="none" stroke="#8a8a80" stroke-width="1.1" opacity="0.6" style="display:none">
+          <ellipse cx="160" cy="56" rx="38" ry="46"/>
+          <rect x="143" y="96" width="34" height="26" rx="8"/>
+          <path d="M96,124 Q72,150 68,250 Q66,310 80,380 L240,380 Q254,310 252,250 Q248,150 224,124
+                   Q200,116 160,114 Q120,116 96,124 Z"/>
+          <path d="M96,128 Q56,158 48,250 Q45,290 56,330 L74,326 Q66,290 70,250 Q76,165 108,138 Z"/>
+          <path d="M224,128 Q264,158 272,250 Q275,290 264,330 L246,326 Q254,290 250,250 Q244,165 212,138 Z"/>
+          <path d="M114,376 Q106,450 104,520 Q102,565 108,600 L138,600 Q135,565 137,520 Q139,450 138,376 Z"/>
+          <path d="M206,376 Q214,450 216,520 Q218,565 212,600 L182,600 Q185,565 183,520 Q181,450 182,376 Z"/>
+        </g>
+
+        <!-- ══ ORGAN REGIONS (anatomically-shaped) ══ -->
+
+        <!-- Brain: inside cranium, upper skull -->
+        <g class="organ-region" id="organ-brain"
+           data-key="Cortical_neurons" data-label="Brain (Cortical Neurons)"
+           onmouseenter="showTooltip(event,'brain')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="48" rx="30" ry="36"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Thyroid: base of neck, just above clavicle -->
+        <g class="organ-region" id="organ-thyroid"
+           data-key="Thyroid" data-label="Thyroid"
+           onmouseenter="showTooltip(event,'thyroid')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="120" rx="14" ry="9"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Head & Neck / Larynx: mid-neck -->
+        <g class="organ-region" id="organ-neck"
+           data-key="Head_and_neck_larynx" data-label="Head & Neck (Larynx)"
+           onmouseenter="showTooltip(event,'neck')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="102" rx="11" ry="13" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Heart: centre-left chest -->
+        <g class="organ-region" id="organ-heart"
+           data-key="Left_atrium" data-label="Heart (Left Atrium)"
+           onmouseenter="showTooltip(event,'heart')" onmouseleave="hideTooltip()">
+          <ellipse cx="148" cy="200" rx="22" ry="28"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Lungs: flanking heart in ribcage -->
+        <g class="organ-region" id="organ-lung"
+           data-key="Lung_cells" data-label="Lung"
+           onmouseenter="showTooltip(event,'lung')" onmouseleave="hideTooltip()">
+          <!-- Left lung -->
+          <ellipse cx="122" cy="198" rx="26" ry="46"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+          <!-- Right lung -->
+          <ellipse cx="196" cy="196" rx="26" ry="46"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Breast: lower chest flanks, below the ribcage -->
+        <g class="organ-region" id="organ-breast"
+           data-key="Breast" data-label="Breast"
+           onmouseenter="showTooltip(event,'breast')" onmouseleave="hideTooltip()">
+          <ellipse cx="116" cy="256" rx="22" ry="20" fill="rgba(120,120,110,0.06)" stroke="none"/>
+          <ellipse cx="204" cy="256" rx="22" ry="20" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Liver: right upper abdomen under ribcage -->
+        <g class="organ-region" id="organ-liver"
+           data-key="Hepatocytes" data-label="Liver (Hepatocytes)"
+           onmouseenter="showTooltip(event,'liver')" onmouseleave="hideTooltip()">
+          <ellipse cx="145" cy="290" rx="38" ry="28"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Upper GI / Stomach: left of liver -->
+        <g class="organ-region" id="organ-uppergi"
+           data-key="Upper_GI" data-label="Upper GI (Esophagus / Stomach)"
+           onmouseenter="showTooltip(event,'uppergi')" onmouseleave="hideTooltip()">
+          <ellipse cx="188" cy="288" rx="18" ry="22"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Pancreas: behind stomach, horizontal -->
+        <g class="organ-region" id="organ-pancreas"
+           data-key="pancreas_combined" data-label="Pancreas"
+           onmouseenter="showTooltip(event,'pancreas')" onmouseleave="hideTooltip()">
+          <ellipse cx="158" cy="316" rx="28" ry="10"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Kidneys: flanking spine at mid-abdomen -->
+        <g class="organ-region" id="organ-kidney"
+           data-key="Kidney" data-label="Kidney"
+           onmouseenter="showTooltip(event,'kidney')" onmouseleave="hideTooltip()">
+          <ellipse cx="112" cy="308" rx="14" ry="20" fill="rgba(120,120,110,0.06)" stroke="none"/>
+          <ellipse cx="208" cy="308" rx="14" ry="20" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Colon: frame around lower abdomen -->
+        <g class="organ-region" id="organ-colon"
+           data-key="Colon_epithelial_cells" data-label="Colon (Epithelium)"
+           onmouseenter="showTooltip(event,'colon')" onmouseleave="hideTooltip()">
+          <!-- Outer ring of large intestine as a thick annular path -->
+          <path d="M118,334 Q106,334 104,350 Q102,370 106,390 Q112,408 130,418 Q148,424 160,424
+                   Q172,424 190,418 Q208,408 214,390 Q218,370 216,350 Q214,334 202,334
+                   Q190,330 174,330 Q160,328 146,330 Q132,330 118,334 Z"
+                fill="rgba(120,120,110,0.06)" stroke="none"/>
+          <!-- Inner cutout (small intestine territory) -->
+          <path d="M130,346 Q118,348 118,362 Q118,382 126,396 Q136,408 160,410
+                   Q184,408 194,396 Q202,382 202,362 Q202,348 190,346
+                   Q176,342 160,342 Q144,342 130,346 Z"
+                fill="rgba(0,0,0,0.04)" stroke="none"/>
+        </g>
+
+        <!-- Adipocytes: outer flanks at waist level -->
+        <g class="organ-region" id="organ-adipose"
+           data-key="Adipocytes" data-label="Adipocytes (Fat)"
+           onmouseenter="showTooltip(event,'adipose')" onmouseleave="hideTooltip()">
+          <ellipse cx="82" cy="330" rx="16" ry="26" fill="rgba(120,120,110,0.06)" stroke="none"/>
+          <ellipse cx="238" cy="330" rx="16" ry="26" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Vascular endothelium: aorta, neck to pelvis -->
+        <g class="organ-region" id="organ-vascular"
+           data-key="Vascular_endothelial_cells" data-label="Vascular Endothelium"
+           onmouseenter="showTooltip(event,'vascular')" onmouseleave="hideTooltip()">
+          <path d="M160,130 Q157,200 160,290 Q162,350 160,420" stroke="rgba(120,120,110,0.08)" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- Bladder: lower pelvis, the round yellow sphere visible in photo -->
+        <g class="organ-region" id="organ-bladder"
+           data-key="Bladder" data-label="Bladder"
+           onmouseenter="showTooltip(event,'bladder')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="436" rx="26" ry="24" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Prostate: just inferior to bladder -->
+        <g class="organ-region" id="organ-prostate"
+           data-key="Prostate" data-label="Prostate"
+           onmouseenter="showTooltip(event,'prostate')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="463" rx="13" ry="10" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- Uterus/Cervix: overlapping bladder slightly, pear-shape -->
+        <g class="organ-region" id="organ-uterus"
+           data-key="Uterus_cervix" data-label="Uterus / Cervix"
+           onmouseenter="showTooltip(event,'uterus')" onmouseleave="hideTooltip()">
+          <ellipse cx="160" cy="430" rx="16" ry="20" fill="rgba(120,120,110,0.06)" stroke="none"/>
+        </g>
+
+        <!-- ══ HITBOX LABELS (toggled by button) ══ -->
+        <g id="hitbox-labels" style="display:none; pointer-events:none;">
+          <!-- Brain -->
+          <text x="160" y="44" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">Brain</text>
+          <!-- Neck / Larynx -->
+          <text x="160" y="100" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Larynx</text>
+          <!-- Thyroid -->
+          <text x="160" y="130" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Thyroid</text>
+          <!-- Left lung -->
+          <text x="122" y="197" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">L. Lung</text>
+          <!-- Right lung -->
+          <text x="196" y="197" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">R. Lung</text>
+          <!-- Heart -->
+          <text x="148" y="200" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">Heart</text>
+          <!-- Breast L -->
+          <text x="116" y="256" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Breast</text>
+          <!-- Breast R -->
+          <text x="204" y="256" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Breast</text>
+          <!-- Liver -->
+          <text x="145" y="291" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">Liver</text>
+          <!-- Upper GI -->
+          <text x="188" y="289" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Stomach</text>
+          <!-- Pancreas -->
+          <text x="158" y="318" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Pancreas</text>
+          <!-- L Kidney -->
+          <text x="112" y="309" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Kidney</text>
+          <!-- R Kidney -->
+          <text x="208" y="309" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Kidney</text>
+          <!-- Colon -->
+          <text x="160" y="415" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">Colon</text>
+          <!-- Adipose L -->
+          <text x="82" y="331" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#2b6e8f" font-weight="500">Fat</text>
+          <!-- Adipose R -->
+          <text x="238" y="331" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#2b6e8f" font-weight="500">Fat</text>
+          <!-- Bladder -->
+          <text x="160" y="437" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="#2b6e8f" font-weight="500">Bladder</text>
+          <!-- Prostate -->
+          <text x="160" y="464" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Prostate</text>
+          <!-- Uterus -->
+          <text x="160" y="428" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="#2b6e8f" font-weight="500">Uterus</text>
+          <!-- Vascular (label on the aorta line) -->
+          <text x="173" y="230" text-anchor="start" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#2b6e8f" font-weight="500">Aorta</text>
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- Anatomical illustration credit / scale note -->
+    <div style="position:absolute; bottom:62px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:8.5px; color:var(--text-dim); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7;">
+      Schematic anatomy · not to clinical scale
+    </div>
+
+    <!-- Sample selector -->
+    <div class="sample-selector">
+      <span class="sample-label">Sample</span>
+      <select class="sample-select" id="sampleSelect" onchange="setSample(this.value)">
+        <option value="__mean__">— Mean of all samples —</option>
+      </select>
+      <button id="hitboxBtn" onclick="toggleHitboxes()"
+        style="margin-left:8px;font-family:var(--mono);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
+               color:var(--text-dim);border:1px solid var(--border2);background:transparent;
+               padding:3px 8px;border-radius:3px;cursor:pointer;transition:all 0.15s;white-space:nowrap;">
+        Hitboxes OFF
+      </button>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="side-panel">
+    <div class="side-tabs">
+      <button class="side-tab active" id="tabTissues" onclick="setTab('tissues')">Tissues</button>
+      <button class="side-tab" id="tabCompare" onclick="setTab('compare')">vs Healthy</button>
+      <button class="side-tab" id="tabInfo" onclick="setTab('info')">About</button>
+    </div>
+    <div class="side-content" id="sideContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const SCENARIOS = {
+  healthy: {
+    title: "Healthy Donor",
+    desc: "Plasma cfDNA from 12 healthy individuals. Blood and erythrocyte progenitors dominate; organ-specific signals are low but detectable.",
+    pill: "BASELINE",
+    mean_proportions: {"Monocytes_EPIC":0.092,"B-cells_EPIC":0.041,"CD4T-cells_EPIC":0.001,"NK-cells_EPIC":0.068,"CD8T-cells_EPIC":0.0205,"Neutrophils_EPIC":0.3561,"Erythrocyte_progenitors":0.2667,"Adipocytes":0.0,"Cortical_neurons":0.0244,"Hepatocytes":0.0144,"Lung_cells":0.0035,"Pancreatic_beta_cells":0.0038,"Pancreatic_acinar_cells":0.003,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0867,"Colon_epithelial_cells":0.0123,"Left_atrium":0.0007,"Bladder":0.003,"Breast":0.0002,"Head_and_neck_larynx":0.0023,"Kidney":0.0011,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},
+    samples: {"cfDNA_young_male_pool_rep1":{"Monocytes_EPIC":0.085,"B-cells_EPIC":0.041,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.089,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.303,"Erythrocyte_progenitors":0.321,"Adipocytes":0.0,"Cortical_neurons":0.025,"Hepatocytes":0.018,"Lung_cells":0.002,"Pancreatic_beta_cells":0.004,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.099,"Colon_epithelial_cells":0.007,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.006,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_young_male_pool_rep2":{"Monocytes_EPIC":0.081,"B-cells_EPIC":0.045,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.074,"CD8T-cells_EPIC":0.008,"Neutrophils_EPIC":0.339,"Erythrocyte_progenitors":0.282,"Adipocytes":0.0,"Cortical_neurons":0.038,"Hepatocytes":0.019,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.002,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.096,"Colon_epithelial_cells":0.016,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_young_female_pool_rep1":{"Monocytes_EPIC":0.1,"B-cells_EPIC":0.041,"CD4T-cells_EPIC":0.008,"NK-cells_EPIC":0.088,"CD8T-cells_EPIC":0.014,"Neutrophils_EPIC":0.335,"Erythrocyte_progenitors":0.274,"Adipocytes":0.0,"Cortical_neurons":0.023,"Hepatocytes":0.011,"Lung_cells":0.006,"Pancreatic_beta_cells":0.006,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.074,"Colon_epithelial_cells":0.005,"Left_atrium":0.005,"Bladder":0.009,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.002,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_young_female_pool_rep2":{"Monocytes_EPIC":0.118,"B-cells_EPIC":0.034,"CD4T-cells_EPIC":0.004,"NK-cells_EPIC":0.074,"CD8T-cells_EPIC":0.019,"Neutrophils_EPIC":0.27,"Erythrocyte_progenitors":0.322,"Adipocytes":0.0,"Cortical_neurons":0.03,"Hepatocytes":0.014,"Lung_cells":0.0,"Pancreatic_beta_cells":0.008,"Pancreatic_acinar_cells":0.003,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.093,"Colon_epithelial_cells":0.01,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.001,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_old_male_pool_rep1":{"Monocytes_EPIC":0.119,"B-cells_EPIC":0.02,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.066,"CD8T-cells_EPIC":0.008,"Neutrophils_EPIC":0.364,"Erythrocyte_progenitors":0.258,"Adipocytes":0.0,"Cortical_neurons":0.017,"Hepatocytes":0.01,"Lung_cells":0.009,"Pancreatic_beta_cells":0.004,"Pancreatic_acinar_cells":0.006,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.091,"Colon_epithelial_cells":0.013,"Left_atrium":0.0,"Bladder":0.009,"Breast":0.0,"Head_and_neck_larynx":0.007,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_old_male_pool_rep2":{"Monocytes_EPIC":0.123,"B-cells_EPIC":0.013,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.077,"CD8T-cells_EPIC":0.007,"Neutrophils_EPIC":0.322,"Erythrocyte_progenitors":0.286,"Adipocytes":0.0,"Cortical_neurons":0.018,"Hepatocytes":0.014,"Lung_cells":0.007,"Pancreatic_beta_cells":0.004,"Pancreatic_acinar_cells":0.007,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.099,"Colon_epithelial_cells":0.01,"Left_atrium":0.002,"Bladder":0.007,"Breast":0.0,"Head_and_neck_larynx":0.002,"Kidney":0.003,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_old_female_pool_rep1":{"Monocytes_EPIC":0.1,"B-cells_EPIC":0.032,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.063,"CD8T-cells_EPIC":0.007,"Neutrophils_EPIC":0.347,"Erythrocyte_progenitors":0.292,"Adipocytes":0.0,"Cortical_neurons":0.021,"Hepatocytes":0.018,"Lung_cells":0.0,"Pancreatic_beta_cells":0.009,"Pancreatic_acinar_cells":0.004,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.085,"Colon_epithelial_cells":0.01,"Left_atrium":0.0,"Bladder":0.007,"Breast":0.002,"Head_and_neck_larynx":0.005,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_old_female_pool_rep2":{"Monocytes_EPIC":0.132,"B-cells_EPIC":0.009,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.072,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.262,"Erythrocyte_progenitors":0.36,"Adipocytes":0.0,"Cortical_neurons":0.007,"Hepatocytes":0.006,"Lung_cells":0.016,"Pancreatic_beta_cells":0.01,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.099,"Colon_epithelial_cells":0.007,"Left_atrium":0.001,"Bladder":0.002,"Breast":0.0,"Head_and_neck_larynx":0.007,"Kidney":0.008,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_healthy_individual_1":{"Monocytes_EPIC":0.05,"B-cells_EPIC":0.069,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.038,"CD8T-cells_EPIC":0.076,"Neutrophils_EPIC":0.455,"Erythrocyte_progenitors":0.149,"Adipocytes":0.0,"Cortical_neurons":0.039,"Hepatocytes":0.01,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.009,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.08,"Colon_epithelial_cells":0.027,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_healthy_individual_2":{"Monocytes_EPIC":0.087,"B-cells_EPIC":0.068,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.062,"CD8T-cells_EPIC":0.067,"Neutrophils_EPIC":0.441,"Erythrocyte_progenitors":0.167,"Adipocytes":0.0,"Cortical_neurons":0.02,"Hepatocytes":0.01,"Lung_cells":0.002,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.001,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.06,"Colon_epithelial_cells":0.014,"Left_atrium":0.0,"Bladder":0.002,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_healthy_individual_3":{"Monocytes_EPIC":0.075,"B-cells_EPIC":0.041,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.05,"CD8T-cells_EPIC":0.01,"Neutrophils_EPIC":0.353,"Erythrocyte_progenitors":0.311,"Adipocytes":0.0,"Cortical_neurons":0.03,"Hepatocytes":0.022,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.095,"Colon_epithelial_cells":0.014,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_healthy_individual_4":{"Monocytes_EPIC":0.034,"B-cells_EPIC":0.079,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.063,"CD8T-cells_EPIC":0.03,"Neutrophils_EPIC":0.482,"Erythrocyte_progenitors":0.179,"Adipocytes":0.0,"Cortical_neurons":0.025,"Hepatocytes":0.021,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.004,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.069,"Colon_epithelial_cells":0.014,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0}}
+  },
+  colon_cancer: {
+    title: "Colon Cancer",
+    desc: "Colorectal cancer patients. Colon epithelial cfDNA is dramatically elevated, comprising ~48% of the plasma DNA pool on average.",
+    pill: "CRC",
+    mean_proportions: {"Monocytes_EPIC":0.0083,"B-cells_EPIC":0.0693,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0005,"CD8T-cells_EPIC":0.0222,"Neutrophils_EPIC":0.1095,"Erythrocyte_progenitors":0.0163,"Adipocytes":0.0,"Cortical_neurons":0.0018,"Hepatocytes":0.0362,"Lung_cells":0.002,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0148,"Pancreatic_duct_cells":0.005,"Vascular_endothelial_cells":0.0008,"Colon_epithelial_cells":0.4788,"Left_atrium":0.0,"Bladder":0.1018,"Breast":0.1215,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0085,"Thyroid":0.0,"Upper_GI":0.0027,"Uterus_cervix":0.0},
+    samples: {"cfDNA_colon_cancer_806":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.05,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.007,"Neutrophils_EPIC":0.0,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.047,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.672,"Left_atrium":0.0,"Bladder":0.14,"Breast":0.085,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_colon_cancer_684":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.097,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.039,"Neutrophils_EPIC":0.0,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.0,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.025,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.496,"Left_atrium":0.0,"Bladder":0.102,"Breast":0.207,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.033,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_colon_cancer_806_50ng":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.05,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.002,"Neutrophils_EPIC":0.0,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.04,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.68,"Left_atrium":0.0,"Bladder":0.15,"Breast":0.077,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_colon_cancer_2010":{"Monocytes_EPIC":0.033,"B-cells_EPIC":0.08,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.002,"CD8T-cells_EPIC":0.041,"Neutrophils_EPIC":0.438,"Erythrocyte_progenitors":0.065,"Adipocytes":0.0,"Cortical_neurons":0.007,"Hepatocytes":0.058,"Lung_cells":0.008,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.034,"Pancreatic_duct_cells":0.02,"Vascular_endothelial_cells":0.003,"Colon_epithelial_cells":0.067,"Left_atrium":0.0,"Bladder":0.015,"Breast":0.117,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.001,"Thyroid":0.0,"Upper_GI":0.011,"Uterus_cervix":0.0}}
+  },
+  lung_cancer: {
+    title: "Lung Cancer",
+    desc: "Non-small cell lung cancer patients. Neutrophil-dominant cfDNA with a detectable lung cell signal above the healthy baseline.",
+    pill: "NSCLC",
+    mean_proportions: {"Monocytes_EPIC":0.0175,"B-cells_EPIC":0.0197,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0165,"CD8T-cells_EPIC":0.01,"Neutrophils_EPIC":0.7158,"Erythrocyte_progenitors":0.1068,"Adipocytes":0.0,"Cortical_neurons":0.0192,"Hepatocytes":0.013,"Lung_cells":0.0077,"Pancreatic_beta_cells":0.0003,"Pancreatic_acinar_cells":0.0047,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0455,"Colon_epithelial_cells":0.0103,"Left_atrium":0.0,"Bladder":0.008,"Breast":0.0037,"Head_and_neck_larynx":0.0,"Kidney":0.0008,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},
+    samples: {"cfDNA_lung_cancer_1":{"Monocytes_EPIC":0.035,"B-cells_EPIC":0.027,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.026,"CD8T-cells_EPIC":0.033,"Neutrophils_EPIC":0.5,"Erythrocyte_progenitors":0.2,"Adipocytes":0.0,"Cortical_neurons":0.021,"Hepatocytes":0.013,"Lung_cells":0.016,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.018,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.061,"Colon_epithelial_cells":0.017,"Left_atrium":0.0,"Bladder":0.018,"Breast":0.015,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_lung_cancer_1478":{"Monocytes_EPIC":0.029,"B-cells_EPIC":0.016,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.003,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.81,"Erythrocyte_progenitors":0.059,"Adipocytes":0.0,"Cortical_neurons":0.016,"Hepatocytes":0.01,"Lung_cells":0.004,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.041,"Colon_epithelial_cells":0.008,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.003,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_lung_cancer_2244":{"Monocytes_EPIC":0.001,"B-cells_EPIC":0.026,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.037,"CD8T-cells_EPIC":0.006,"Neutrophils_EPIC":0.656,"Erythrocyte_progenitors":0.14,"Adipocytes":0.0,"Cortical_neurons":0.028,"Hepatocytes":0.018,"Lung_cells":0.011,"Pancreatic_beta_cells":0.001,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.051,"Colon_epithelial_cells":0.009,"Left_atrium":0.0,"Bladder":0.014,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_lung_cancer_1433":{"Monocytes_EPIC":0.005,"B-cells_EPIC":0.01,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.001,"Neutrophils_EPIC":0.897,"Erythrocyte_progenitors":0.028,"Adipocytes":0.0,"Cortical_neurons":0.012,"Hepatocytes":0.011,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.001,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.029,"Colon_epithelial_cells":0.007,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0}}
+  },
+  breast_cancer: {
+    title: "Breast Cancer",
+    desc: "Breast cancer patients. Breast-derived cfDNA rises markedly, accounting for ~35% of plasma DNA on average — the model's hallmark signal.",
+    pill: "BCA",
+    mean_proportions: {"Monocytes_EPIC":0.0,"B-cells_EPIC":0.0593,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.038,"Neutrophils_EPIC":0.0393,"Erythrocyte_progenitors":0.0027,"Adipocytes":0.0,"Cortical_neurons":0.005,"Hepatocytes":0.053,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.135,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.113,"Left_atrium":0.0,"Bladder":0.0363,"Breast":0.354,"Head_and_neck_larynx":0.0,"Kidney":0.013,"Prostate":0.1513,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},
+    samples: {"cfDNA_breast_cancer_1040":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.031,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.04,"Neutrophils_EPIC":0.029,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.015,"Hepatocytes":0.026,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.135,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.111,"Left_atrium":0.0,"Bladder":0.003,"Breast":0.403,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.206,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_breast_cancer_1711":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.066,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.038,"Neutrophils_EPIC":0.089,"Erythrocyte_progenitors":0.008,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.044,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.086,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.084,"Left_atrium":0.0,"Bladder":0.071,"Breast":0.298,"Head_and_neck_larynx":0.0,"Kidney":0.039,"Prostate":0.178,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_breast_cancer_1438":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.081,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.036,"Neutrophils_EPIC":0.0,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.089,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.184,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.144,"Left_atrium":0.0,"Bladder":0.035,"Breast":0.361,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.07,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0}}
+  },
+  sepsis: {
+    title: "Sepsis",
+    desc: "ICU patients with sepsis. Hepatocyte-derived cfDNA surges dramatically — up to 57% in severe cases — indicating systemic liver stress.",
+    pill: "ICU",
+    mean_proportions: {"Monocytes_EPIC":0.0147,"B-cells_EPIC":0.0526,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0037,"CD8T-cells_EPIC":0.0198,"Neutrophils_EPIC":0.606,"Erythrocyte_progenitors":0.0318,"Adipocytes":0.0,"Cortical_neurons":0.0295,"Hepatocytes":0.1481,"Lung_cells":0.0011,"Pancreatic_beta_cells":0.0003,"Pancreatic_acinar_cells":0.0172,"Pancreatic_duct_cells":0.0001,"Vascular_endothelial_cells":0.0316,"Colon_epithelial_cells":0.024,"Left_atrium":0.0,"Bladder":0.009,"Breast":0.0097,"Head_and_neck_larynx":0.0003,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0002,"Upper_GI":0.0,"Uterus_cervix":0.0},
+    samples: {"cfDNA_sepsis_2":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.102,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.012,"Neutrophils_EPIC":0.385,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.004,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.254,"Left_atrium":0.0,"Bladder":0.138,"Breast":0.104,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_sepsis_3":{"Monocytes_EPIC":0.024,"B-cells_EPIC":0.064,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.017,"CD8T-cells_EPIC":0.019,"Neutrophils_EPIC":0.51,"Erythrocyte_progenitors":0.191,"Adipocytes":0.0,"Cortical_neurons":0.016,"Hepatocytes":0.06,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.012,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.057,"Colon_epithelial_cells":0.014,"Left_atrium":0.0,"Bladder":0.008,"Breast":0.008,"Head_and_neck_larynx":0.001,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_sepsis_16":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.072,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.033,"Neutrophils_EPIC":0.34,"Erythrocyte_progenitors":0.009,"Adipocytes":0.0,"Cortical_neurons":0.059,"Hepatocytes":0.428,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.042,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.012,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.005,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_sepsis_17_250ng_rep1":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.101,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.046,"Neutrophils_EPIC":0.102,"Erythrocyte_progenitors":0.006,"Adipocytes":0.0,"Cortical_neurons":0.081,"Hepatocytes":0.567,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.05,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.0,"Colon_epithelial_cells":0.024,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.021,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_sepsis_23_250ng_rep1":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.0,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.947,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.009,"Hepatocytes":0.0,"Lung_cells":0.0,"Pancreatic_beta_cells":0.001,"Pancreatic_acinar_cells":0.001,"Pancreatic_duct_cells":0.003,"Vascular_endothelial_cells":0.032,"Colon_epithelial_cells":0.006,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_sepsis_26_250ng_rep1":{"Monocytes_EPIC":0.065,"B-cells_EPIC":0.115,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.004,"CD8T-cells_EPIC":0.043,"Neutrophils_EPIC":0.425,"Erythrocyte_progenitors":0.048,"Adipocytes":0.0,"Cortical_neurons":0.029,"Hepatocytes":0.195,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.023,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.031,"Colon_epithelial_cells":0.007,"Left_atrium":0.0,"Bladder":0.013,"Breast":0.002,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0}}
+  },
+  islet_transplant: {
+    title: "Islet Transplant",
+    desc: "Pancreatic islet recipients sampled pre-transplant and 1–2 hrs post. Beta-cell cfDNA spikes immediately after transplantation, reflecting islet cell death.",
+    pill: "TRANSPLANT",
+    mean_proportions: {"Monocytes_EPIC":0.056,"B-cells_EPIC":0.0486,"CD4T-cells_EPIC":0.0187,"NK-cells_EPIC":0.1177,"CD8T-cells_EPIC":0.0209,"Neutrophils_EPIC":0.6508,"Erythrocyte_progenitors":0.0312,"Adipocytes":0.0,"Cortical_neurons":0.0063,"Hepatocytes":0.0028,"Lung_cells":0.0007,"Pancreatic_beta_cells":0.0111,"Pancreatic_acinar_cells":0.0053,"Pancreatic_duct_cells":0.0028,"Vascular_endothelial_cells":0.0229,"Colon_epithelial_cells":0.0004,"Left_atrium":0.0,"Bladder":0.0004,"Breast":0.0,"Head_and_neck_larynx":0.0021,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0014,"Upper_GI":0.0,"Uterus_cervix":0.0},
+    samples: {"cfDNA_islet_151_pre":{"Monocytes_EPIC":0.026,"B-cells_EPIC":0.11,"CD4T-cells_EPIC":0.162,"NK-cells_EPIC":0.144,"CD8T-cells_EPIC":0.169,"Neutrophils_EPIC":0.345,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.003,"Hepatocytes":0.0,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.021,"Colon_epithelial_cells":0.0,"Left_atrium":0.0,"Bladder":0.003,"Breast":0.0,"Head_and_neck_larynx":0.016,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_islet_151_1hr":{"Monocytes_EPIC":0.038,"B-cells_EPIC":0.0,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.142,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.762,"Erythrocyte_progenitors":0.018,"Adipocytes":0.0,"Cortical_neurons":0.007,"Hepatocytes":0.0,"Lung_cells":0.001,"Pancreatic_beta_cells":0.011,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.021,"Colon_epithelial_cells":0.0,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_islet_151_2hr":{"Monocytes_EPIC":0.0,"B-cells_EPIC":0.0,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.0,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.991,"Erythrocyte_progenitors":0.0,"Adipocytes":0.0,"Cortical_neurons":0.002,"Hepatocytes":0.0,"Lung_cells":0.0,"Pancreatic_beta_cells":0.0,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.007,"Colon_epithelial_cells":0.0,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_islet_144_pre":{"Monocytes_EPIC":0.073,"B-cells_EPIC":0.0,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.154,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.684,"Erythrocyte_progenitors":0.052,"Adipocytes":0.0,"Cortical_neurons":0.0,"Hepatocytes":0.003,"Lung_cells":0.003,"Pancreatic_beta_cells":0.001,"Pancreatic_acinar_cells":0.0,"Pancreatic_duct_cells":0.0,"Vascular_endothelial_cells":0.029,"Colon_epithelial_cells":0.0,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_islet_144_1hr":{"Monocytes_EPIC":0.056,"B-cells_EPIC":0.027,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.07,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.628,"Erythrocyte_progenitors":0.044,"Adipocytes":0.0,"Cortical_neurons":0.013,"Hepatocytes":0.01,"Lung_cells":0.0,"Pancreatic_beta_cells":0.045,"Pancreatic_acinar_cells":0.038,"Pancreatic_duct_cells":0.017,"Vascular_endothelial_cells":0.048,"Colon_epithelial_cells":0.004,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0},"cfDNA_islet_144_2hr":{"Monocytes_EPIC":0.094,"B-cells_EPIC":0.0,"CD4T-cells_EPIC":0.0,"NK-cells_EPIC":0.029,"CD8T-cells_EPIC":0.0,"Neutrophils_EPIC":0.742,"Erythrocyte_progenitors":0.046,"Adipocytes":0.0,"Cortical_neurons":0.003,"Hepatocytes":0.006,"Lung_cells":0.002,"Pancreatic_beta_cells":0.019,"Pancreatic_acinar_cells":0.009,"Pancreatic_duct_cells":0.008,"Vascular_endothelial_cells":0.042,"Colon_epithelial_cells":0.0,"Left_atrium":0.0,"Bladder":0.0,"Breast":0.0,"Head_and_neck_larynx":0.0,"Kidney":0.0,"Prostate":0.0,"Thyroid":0.0,"Upper_GI":0.0,"Uterus_cervix":0.0}}
+  }
+};
+
+// Organ → key mapping for body SVG
+const ORGAN_MAP = {
+  brain:    { key: 'Cortical_neurons',         label: 'Brain (Cortical Neurons)' },
+  thyroid:  { key: 'Thyroid',                   label: 'Thyroid' },
+  heart:    { key: 'Left_atrium',               label: 'Heart (Left Atrium)' },
+  lung:     { key: 'Lung_cells',                label: 'Lung' },
+  liver:    { key: 'Hepatocytes',               label: 'Liver (Hepatocytes)' },
+  pancreas: { key: 'pancreas_combined',         label: 'Pancreas' },
+  colon:    { key: 'Colon_epithelial_cells',    label: 'Colon (Epithelium)' },
+  kidney:   { key: 'Kidney',                    label: 'Kidney' },
+  bladder:  { key: 'Bladder',                   label: 'Bladder' },
+  breast:   { key: 'Breast',                    label: 'Breast' },
+  prostate: { key: 'Prostate',                  label: 'Prostate' },
+  uterus:   { key: 'Uterus_cervix',             label: 'Uterus / Cervix' },
+  neck:     { key: 'Head_and_neck_larynx',      label: 'Head & Neck (Larynx)' },
+  uppergi:  { key: 'Upper_GI',                  label: 'Upper GI (Esophagus)' },
+  vascular: { key: 'Vascular_endothelial_cells',label: 'Vascular Endothelium' },
+  adipose:  { key: 'Adipocytes',                label: 'Adipocytes (Fat)' }
+};
+
+// Blood / immune cell types (shown in side panel only)
+const BLOOD_KEYS = [
+  { key: 'Neutrophils_EPIC',         label: 'Neutrophils' },
+  { key: 'Erythrocyte_progenitors',  label: 'Erythrocyte Progenitors' },
+  { key: 'Monocytes_EPIC',           label: 'Monocytes' },
+  { key: 'B-cells_EPIC',             label: 'B-cells' },
+  { key: 'NK-cells_EPIC',            label: 'NK-cells' },
+  { key: 'CD8T-cells_EPIC',          label: 'CD8 T-cells' },
+  { key: 'CD4T-cells_EPIC',          label: 'CD4 T-cells' },
+];
+
+// Tissue/organ keys for side panel
+const TISSUE_KEYS = [
+  { key: 'Hepatocytes',              label: 'Liver' },
+  { key: 'Colon_epithelial_cells',   label: 'Colon' },
+  { key: 'Lung_cells',               label: 'Lung' },
+  { key: 'Breast',                   label: 'Breast' },
+  { key: 'pancreas_combined',        label: 'Pancreas (all)' },
+  { key: 'Pancreatic_beta_cells',    label: '↳ Beta cells' },
+  { key: 'Pancreatic_acinar_cells',  label: '↳ Acinar cells' },
+  { key: 'Pancreatic_duct_cells',    label: '↳ Duct cells' },
+  { key: 'Vascular_endothelial_cells',label: 'Vascular Endoth.' },
+  { key: 'Cortical_neurons',         label: 'Brain (Cortical)' },
+  { key: 'Bladder',                  label: 'Bladder' },
+  { key: 'Prostate',                 label: 'Prostate' },
+  { key: 'Kidney',                   label: 'Kidney' },
+  { key: 'Upper_GI',                 label: 'Upper GI' },
+  { key: 'Head_and_neck_larynx',     label: 'Head & Neck' },
+  { key: 'Left_atrium',              label: 'Heart' },
+  { key: 'Thyroid',                  label: 'Thyroid' },
+  { key: 'Uterus_cervix',            label: 'Uterus/Cervix' },
+  { key: 'Adipocytes',               label: 'Adipocytes' },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentScenario = 'healthy';
+let currentSample = '__mean__';
+let currentTab = 'tissues';
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function getProportion(props, key) {
+  if (key === 'pancreas_combined') {
+    return (props['Pancreatic_beta_cells'] || 0) +
+           (props['Pancreatic_acinar_cells'] || 0) +
+           (props['Pancreatic_duct_cells'] || 0);
+  }
+  return props[key] || 0;
+}
+
+function getCurrentProps() {
+  const sc = SCENARIOS[currentScenario];
+  if (currentSample === '__mean__') return sc.mean_proportions;
+  return sc.samples[currentSample] || sc.mean_proportions;
+}
+
+function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+// Color scale for clinical/white background: pale slate → teal → amber → deep red
+function propToColor(v, maxV) {
+  if (v === 0 || maxV === 0) return { fill: 'rgba(140,140,132,0.07)', stroke: 'rgba(140,140,132,0.25)', glow: false };
+  const norm = Math.min(v / maxV, 1);
+  if (norm < 0.3) {
+    const t = norm / 0.3;
+    const a = 0.12 + t * 0.18;
+    return { fill: `rgba(43,110,143,${a})`, stroke: `rgba(43,110,143,${0.45 + t * 0.25})`, glow: false };
+  } else if (norm < 0.7) {
+    const t = (norm - 0.3) / 0.4;
+    const r = Math.round(43 + t * (184-43)), g = Math.round(110 + t * (116-110)), b = Math.round(143 + t * (42-143));
+    return { fill: `rgba(${r},${g},${b},0.45)`, stroke: `rgba(${r},${g},${b},0.85)`, glow: true };
+  } else {
+    const t = (norm - 0.7) / 0.3;
+    const r = Math.round(184 + t * (168-184)), g = Math.round(116 - t * 65), b = Math.round(42 - t * 20);
+    return { fill: `rgba(${r},${g},${b},0.55)`, stroke: `rgba(${r},${g},${b},0.95)`, glow: true };
+  }
+}
+
+// ─── BODY MAP RENDERING ───────────────────────────────────────────────────────
+function updateBodyMap() {
+  const props = getCurrentProps();
+
+  // Find max organ value (not blood cells)
+  let maxOrgan = 0;
+  for (const [id, info] of Object.entries(ORGAN_MAP)) {
+    const v = getProportion(props, info.key);
+    if (v > maxOrgan) maxOrgan = v;
+  }
+  if (maxOrgan === 0) maxOrgan = 0.01;
+
+  for (const [id, info] of Object.entries(ORGAN_MAP)) {
+    const el = document.getElementById('organ-' + id);
+    if (!el) continue;
+    const v = getProportion(props, info.key);
+    const { fill, stroke, glow } = propToColor(v, maxOrgan);
+
+    // Apply to all path/ellipse/line children
+    const shapes = el.querySelectorAll('path, ellipse, line, rect');
+    shapes.forEach(s => {
+      s.style.fill = s.tagName === 'line' ? 'none' : fill;
+      s.style.stroke = stroke;
+      s.style.strokeWidth = v > 0 ? (glow ? '1.5' : '1') : '0.5';
+      s.style.filter = glow ? 'url(#glow-filter)' : 'none';
+    });
+
+    // Animate opacity
+    el.style.opacity = v > 0 ? '1' : '0.5';
+  }
+}
+
+// ─── TOOLTIP ─────────────────────────────────────────────────────────────────
+function showTooltip(event, organId) {
+  const info = ORGAN_MAP[organId];
+  if (!info) return;
+  const props = getCurrentProps();
+  const v = getProportion(props, info.key);
+  const tooltip = document.getElementById('organTooltip');
+  const svgRect = document.getElementById('bodySvg').getBoundingClientRect();
+  const evtX = event.clientX - svgRect.left;
+  const evtY = event.clientY - svgRect.top;
+
+  tooltip.innerHTML = `<strong>${info.label}</strong><br><span class="t-pct">${pct(v)}</span> of cfDNA`;
+  tooltip.classList.add('visible');
+  tooltip.style.left = evtX + 'px';
+  tooltip.style.top = (evtY - 54) + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('organTooltip').classList.remove('visible');
+}
+
+// ─── SIDE PANEL ─────────────────────────────────────────────────────────────
+function renderSidePanel() {
+  const content = document.getElementById('sideContent');
+  if (currentTab === 'tissues') renderTissues(content);
+  else if (currentTab === 'compare') renderCompare(content);
+  else renderInfo(content);
+}
+
+function barColor(v, maxV) {
+  const norm = maxV > 0 ? v / maxV : 0;
+  if (norm < 0.25) return '#5a8aa8';
+  if (norm < 0.6)  return '#2b6e8f';
+  if (norm < 0.85) return '#b8742a';
+  return '#a8333f';
+}
+
+function renderTissues(container) {
+  const props = getCurrentProps();
+
+  // All tissue values sorted desc
+  const allTissues = TISSUE_KEYS.map(t => ({ ...t, v: getProportion(props, t.key) }))
+    .filter(t => t.v > 0)
+    .sort((a, b) => b.v - a.v);
+
+  const bloodCells = BLOOD_KEYS.map(t => ({ ...t, v: getProportion(props, t.key) }))
+    .filter(t => t.v > 0)
+    .sort((a, b) => b.v - a.v);
+
+  const maxT = Math.max(...allTissues.map(t => t.v), 0.001);
+  const maxB = Math.max(...bloodCells.map(t => t.v), 0.001);
+
+  let html = `<div class="panel-label" style="padding:0 0 6px">Organ / Tissue-derived</div>`;
+
+  if (allTissues.length === 0) {
+    html += `<div class="no-data-msg">No organ signal detected in this sample</div>`;
+  } else {
+    allTissues.forEach(t => {
+      const w = (t.v / maxT * 100).toFixed(1);
+      const color = barColor(t.v, maxT);
+      html += `<div class="tissue-row">
+        <div class="tissue-header">
+          <span class="tissue-name">${t.label}</span>
+          <span class="tissue-pct" style="color:${color}">${pct(t.v)}</span>
+        </div>
+        <div class="tissue-bar-bg">
+          <div class="tissue-bar-fill" style="width:${w}%;background:${color}"></div>
+        </div>
+      </div>`;
+    });
+  }
+
+  html += `<div class="blood-section-title">Blood &amp; Immune Cells</div>`;
+  bloodCells.forEach(t => {
+    const w = (t.v / maxB * 100).toFixed(1);
+    html += `<div class="tissue-row">
+      <div class="tissue-header">
+        <span class="tissue-name">${t.label}</span>
+        <span class="tissue-pct" style="color:#5a7a92">${pct(t.v)}</span>
+      </div>
+      <div class="tissue-bar-bg">
+        <div class="tissue-bar-fill" style="width:${w}%;background:#7a9ab2"></div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderCompare(container) {
+  if (currentScenario === 'healthy') {
+    container.innerHTML = `<div class="no-data-msg">Switch to a disease scenario to compare against healthy baseline.</div>`;
+    return;
+  }
+
+  const scenProps = getCurrentProps();
+  const healthyProps = SCENARIOS.healthy.mean_proportions;
+
+  const tissues = TISSUE_KEYS.filter(t => {
+    const sv = getProportion(scenProps, t.key);
+    const hv = getProportion(healthyProps, t.key);
+    return sv > 0.005 || hv > 0.005;
+  });
+
+  const allVals = tissues.flatMap(t => [
+    getProportion(scenProps, t.key),
+    getProportion(healthyProps, t.key)
+  ]);
+  const maxV = Math.max(...allVals, 0.001);
+
+  let html = `<div class="panel-label" style="padding:0 0 8px">Organ / Tissue Signal</div>
+  <div style="display:flex;gap:12px;margin-bottom:10px;font-family:var(--mono);font-size:9px;color:var(--text-dim)">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:4px;background:var(--green);border-radius:2px;display:inline-block"></span>Healthy</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:4px;background:var(--cyan);border-radius:2px;display:inline-block"></span>${SCENARIOS[currentScenario].title}</span>
+  </div>`;
+
+  tissues.forEach(t => {
+    const sv = getProportion(scenProps, t.key);
+    const hv = getProportion(healthyProps, t.key);
+    const sw = (sv / maxV * 100).toFixed(1);
+    const hw = (hv / maxV * 100).toFixed(1);
+    const delta = sv - hv;
+    const deltaStr = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '%';
+    const deltaColor = delta > 0.01 ? '#b8742a' : delta < -0.01 ? '#5a7a92' : '#8a8a82';
+
+    html += `<div class="compare-group" style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text)">${t.label}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:${deltaColor}">${deltaStr}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="height:5px;background:var(--border);border-radius:2px;overflow:hidden;position:relative">
+          <div style="width:${hw}%;height:100%;background:var(--green);border-radius:2px;transition:width 0.5s"></div>
+        </div>
+        <div style="height:5px;background:var(--border);border-radius:2px;overflow:hidden;position:relative">
+          <div style="width:${sw}%;height:100%;background:var(--cyan);border-radius:2px;transition:width 0.5s"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Blood cells comparison
+  html += `<div class="blood-section-title">Blood &amp; Immune Cells</div>`;
+  BLOOD_KEYS.forEach(t => {
+    const sv = getProportion(scenProps, t.key);
+    const hv = getProportion(healthyProps, t.key);
+    const maxBV = Math.max(sv, hv, 0.001) * 1.2;
+    const sw = (sv / maxBV * 100).toFixed(1);
+    const hw = (hv / maxBV * 100).toFixed(1);
+    const delta = sv - hv;
+    const deltaStr = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '%';
+    const deltaColor = Math.abs(delta) < 0.01 ? '#8a8a82' : delta > 0 ? '#b8742a' : '#5a7a92';
+
+    html += `<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">${t.label}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:${deltaColor}">${deltaStr}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="width:${hw}%;height:100%;background:#9a9a92;border-radius:2px;transition:width 0.5s"></div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="width:${sw}%;height:100%;background:#7a9ab2;border-radius:2px;transition:width 0.5s"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderInfo(container) {
+  const infoMap = {
+    healthy: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">In a healthy blood sample, most cfDNA comes from blood cell turnover: neutrophils, erythrocyte progenitors, monocytes, and NK cells together contribute over 80% of all detectable plasma DNA. A small but consistent signal from vascular endothelial cells (~8%) reflects normal endothelial turnover. Organ-specific tissues like liver (~1.4%) and colon (~1.2%) appear at low levels.</div></div>`,
+    colon_cancer: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">Colon cancer causes a dramatic surge in colon-epithelial cfDNA — averaging 48% across patients, versus ~1.2% in healthy donors. This signal originates from tumour cell death, releasing DNA with the characteristic methylation fingerprint of colon epithelium. The blood cell contribution drops proportionally as the tumour signal dominates.</div></div>`,
+    lung_cancer: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">Lung cancer shows a more subtle pattern. The lung cell signal is elevated above healthy baseline (~0.8% vs ~0.35%) but still modest — lung cancers tend to release less cfDNA relative to tumour burden than colon cancers. Neutrophil dominance is heightened, possibly reflecting systemic inflammation common in lung malignancy.</div></div>`,
+    breast_cancer: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">Breast cancer shows a striking breast-derived cfDNA signal averaging ~35%. Notably, the blood cell fraction is greatly reduced — these samples have very low neutrophil contributions, replaced almost entirely by tumour-derived DNA. The prostate signal appearing here likely reflects cross-reactivity in the NNLS model between epithelial tissue types of similar developmental origin.</div></div>`,
+    sepsis: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">Sepsis reveals profound hepatocyte contribution to the cfDNA pool. In severe cases (patient 17), hepatocyte-derived DNA constitutes up to 57% of all plasma DNA — a near-complete shift from the healthy baseline of ~1.4%. This reflects systemic liver damage under the inflammatory cascade. Patient-to-patient variability is extreme, mirroring the heterogeneity of sepsis severity.</div></div>`,
+    islet_transplant: `<div class="info-section"><div class="info-heading">What you're seeing</div><div class="info-text">Pancreatic islet transplantation provides a natural experiment. Pre-transplant samples show a normal, blood-dominated profile. Within 1–2 hours post-infusion, pancreatic beta-cell cfDNA spikes sharply, reflecting the death of transplanted islet cells as they encounter the recipient's immune environment. This demonstrates the method's sensitivity to acute, localised cell death.</div></div>`
+  };
+
+  container.innerHTML = `
+    ${infoMap[currentScenario] || ''}
+    <div class="info-section">
+      <div class="info-heading">How this works</div>
+      <div class="info-text">Dying cells release DNA fragments into the bloodstream. These fragments retain the DNA methylation pattern of the cell they came from — a stable molecular fingerprint. Non-negative least squares (NNLS) deconvolution finds the mixture of reference tissue methylation patterns that best explains the observed cfDNA profile.</div>
+    </div>
+    <div class="info-section">
+      <div class="info-heading">Important caveats</div>
+      <div class="info-text">These are model outputs, not diagnostic results. Sample sizes are small. The NNLS model may attribute signal to cross-reactive tissues of similar developmental origin. The displayed proportions represent the best-fit linear mixture under the reference atlas constraints.</div>
+    </div>
+    <div class="info-cite">Moss et al. (2018) Nat Commun 9:5068<br>DOI: 10.1038/s41467-018-07466-6<br>Data: GEO accession GSE122126</div>`;
+}
+
+// ─── SAMPLE SELECTOR ─────────────────────────────────────────────────────────
+function updateSampleSelector() {
+  const sc = SCENARIOS[currentScenario];
+  const sel = document.getElementById('sampleSelect');
+  sel.innerHTML = `<option value="__mean__">— Mean of all samples —</option>`;
+  Object.keys(sc.samples).forEach(id => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = id.replace(/_/g, ' ');
+    sel.appendChild(opt);
+  });
+  sel.value = '__mean__';
+}
+
+// ─── PUBLIC API ───────────────────────────────────────────────────────────────
+function setScenario(name) {
+  currentScenario = name;
+  currentSample = '__mean__';
+
+  // Update button states
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.scenario-btn').forEach(b => {
+    if (b.getAttribute('onclick') === `setScenario('${name}')`) b.classList.add('active');
+  });
+
+  // Update title/desc
+  const sc = SCENARIOS[name];
+  document.getElementById('mainTitle').textContent = sc.title;
+  document.getElementById('mainDesc').textContent = sc.desc;
+  document.getElementById('headerScenario').textContent = sc.title;
+
+  updateSampleSelector();
+  updateBodyMap();
+  renderSidePanel();
+}
+
+function setSample(v) {
+  currentSample = v;
+  updateBodyMap();
+  renderSidePanel();
+}
+
+function setTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.side-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  renderSidePanel();
+}
+
+// ─── HITBOX TOGGLE ───────────────────────────────────────────────────────────
+let hitboxesOn = false;
+
+function toggleHitboxes() {
+  hitboxesOn = !hitboxesOn;
+  const labelsEl = document.getElementById('hitbox-labels');
+  const btn = document.getElementById('hitboxBtn');
+
+  if (hitboxesOn) {
+    labelsEl.style.display = 'block';
+    // Also show stroked outlines on all organ regions
+    document.querySelectorAll('.organ-region path, .organ-region ellipse, .organ-region rect').forEach(s => {
+      s.dataset.origStroke = s.style.stroke;
+      s.dataset.origStrokeWidth = s.style.strokeWidth;
+      if (!s.style.stroke || s.style.stroke === 'none' || s.style.strokeWidth === '0') {
+        s.style.stroke = 'rgba(43,110,143,0.55)';
+        s.style.strokeWidth = '1';
+        s.style.strokeDasharray = '3,2';
+      } else {
+        s.style.strokeDasharray = '3,2';
+      }
+    });
+    btn.style.color = 'var(--cyan)';
+    btn.style.borderColor = 'var(--cyan)';
+    btn.style.background = 'rgba(43,110,143,0.08)';
+    btn.textContent = 'Hitboxes ON';
+  } else {
+    labelsEl.style.display = 'none';
+    document.querySelectorAll('.organ-region path, .organ-region ellipse, .organ-region rect').forEach(s => {
+      s.style.strokeDasharray = 'none';
+    });
+    btn.style.color = 'var(--text-dim)';
+    btn.style.borderColor = 'var(--border2)';
+    btn.style.background = 'transparent';
+    btn.textContent = 'Hitboxes OFF';
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+setScenario('healthy');
+</script>
+</body>
+</html>

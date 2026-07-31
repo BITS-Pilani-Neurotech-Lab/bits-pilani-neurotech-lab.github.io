@@ -8,6 +8,7 @@ import { fetchPost } from "@/app/actions/getPost";
 interface Piece {
   id: string; // Used to search for matching .md file in ./content
   title: string;
+  author: string; 
   bgColor: string;
   textColor: string;
   isDarkTile?: boolean;
@@ -17,6 +18,7 @@ const piecesData: Piece[] = [
   {
     id: "2024-06-25-bandpower",
     title: "eeg bandpower",
+    author: "Kedar Athrey", 
     bgColor: "bg-[#121212]",
     textColor: "text-white",
     isDarkTile: true,
@@ -24,6 +26,7 @@ const piecesData: Piece[] = [
   {
     id: "2024-07-02-alignment",
     title: "pairwise sequence alignment",
+    author: "Sankalp Tattwadarshi Swain",
     bgColor: "bg-[#6e6e6e]",
     textColor: "text-white",
     isDarkTile: false,
@@ -31,6 +34,7 @@ const piecesData: Piece[] = [
   {
     id: "2024-07-09-emg-dino",
     title: "emg chrome dino project",
+    author: "Darshil Chauhan",
     bgColor: "bg-[#d9d9d9]",
     textColor: "text-zinc-900",
     isDarkTile: false,
@@ -38,6 +42,7 @@ const piecesData: Piece[] = [
   {
     id: "2025-09-04-neurotech-in-action",
     title: "a dating app based on brain signals",
+    author: "Praneet Raj Lingamallu",
     bgColor: "bg-[#121212]",
     textColor: "text-white",
     isDarkTile: true,
@@ -45,6 +50,7 @@ const piecesData: Piece[] = [
   {
     id: "2024-09-11-neurotech-task-2",
     title: "understanding eeg data",
+    author: "Darshil Chauhan",
     bgColor: "bg-[#d9d9d9]",
     textColor: "text-zinc-900",
     isDarkTile: false,
@@ -52,6 +58,7 @@ const piecesData: Piece[] = [
   {
     id: "2025-09-07-bio-track-task-1",
     title: "spotting snp mutations",
+    author: "Praneet Raj Lingamallu",
     bgColor: "bg-[#6e6e6e]",
     textColor: "text-white",
     isDarkTile: false,
@@ -59,6 +66,7 @@ const piecesData: Piece[] = [
   {
     id: "2025-09-07-tech-track-task-1",
     title: "izhikevich model of the neuron",
+    author: "Pratul Gupta",
     bgColor: "bg-[#6e6e6e]",
     textColor: "text-white",
     isDarkTile: false,
@@ -111,7 +119,7 @@ export default function Pieces() {
           {/* Reusable Sidebar */}
           <Sidebar />
 
-          {/* Articles Stack — Exact Original Layout */}
+          {/* Articles Stack */}
           <main className="flex-1 flex flex-col gap-[15px]">
             {piecesData.map((piece) => (
               <article
@@ -119,16 +127,23 @@ export default function Pieces() {
                 onClick={() => handlePieceClick(piece)}
                 className={`group relative w-full h-[100px] ${piece.bgColor} rounded-[28px] p-6 px-8 flex items-center justify-between cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.01] shadow-md`}
               >
-                {/* Title */}
-                <h2
-                  className={`text-2xl font-bold tracking-tight ${piece.textColor} transition-colors duration-300 z-0 ${
-                    piece.isDarkTile
-                      ? "group-hover:text-white"
-                      : "group-hover:text-zinc-900"
-                  }`}
-                >
-                  {piece.title}
-                </h2>
+                {/* Title & Author Stack */}
+                <div className="flex flex-col z-0">
+                  <h2
+                    className={`text-2xl font-bold tracking-tight ${piece.textColor} transition-colors duration-300 ${
+                      piece.isDarkTile
+                        ? "group-hover:text-white"
+                        : "group-hover:text-zinc-900"
+                    }`}
+                  >
+                    {piece.title}
+                  </h2>
+                  <p
+                    className={`text-sm font-medium opacity-80 ${piece.textColor}`}
+                  >
+                    by {piece.author}
+                  </p>
+                </div>
 
                 {/* Consistent Frosted Glass Overlay */}
                 <div className="absolute inset-0 z-10 pointer-events-none rounded-[28px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/20 group-hover:backdrop-blur-[6px] group-hover:border group-hover:border-zinc-500/60 group-hover:ring-1 group-hover:ring-white/40 group-hover:shadow-lg" />

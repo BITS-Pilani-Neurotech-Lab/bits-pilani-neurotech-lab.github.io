@@ -33,7 +33,7 @@ export default function AboutUs() {
                 Neurotech Labs, BITS Pilani
               </h2>
               <p className="text-xl text-zinc-300 leading-relaxed max-w-3xl font-normal">
-                yap
+                We are a community of students passionate about exploring the intersection of neuroscience, cognitive computing, neurotech and biotech. From decoding neural signals and modeling brain circuits to understanding innovative brain-computer interfaces (BCIs), our club serves as a collaborative hub for anyone fascinated by the brain's untapped potential.
               </p>
             </div>
 

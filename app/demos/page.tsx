@@ -6,6 +6,8 @@ import Sidebar from "@/components/Sidebar";
 interface Demo {
   id: string;
   title: string;
+  author?: string;
+  filePath?: string;
   bgColor: string;
   textColor: string;
   isDarkTile?: boolean;
@@ -47,6 +49,8 @@ export default function Demos() {
                   setSelectedDemo({
                     id: "cell-free-dna-systems",
                     title: "cell free dna systems",
+                    author: "Author Name",
+                    filePath: "/demos/cfdna.html",
                     bgColor: "bg-[#6e6e6e]",
                     textColor: "text-white",
                   })
@@ -60,6 +64,9 @@ export default function Demos() {
                   <br />
                   systems
                 </h2>
+                <p className="text-sm font-medium opacity-80 text-white mt-1">
+                  by Ameya Agarwal
+                </p>
                 {/* Glass Overlay */}
                 <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/20 group-hover:backdrop-blur-[6px] group-hover:border group-hover:border-zinc-500/60 group-hover:ring-1 group-hover:ring-white/40 group-hover:shadow-lg" />
               </div>
@@ -70,6 +77,8 @@ export default function Demos() {
                   setSelectedDemo({
                     id: "plasticity-neuron-connections",
                     title: "plasticity of neuron connections",
+                    author: "Ameya Agarwal",
+                    filePath: "/demos/network_static.html",
                     bgColor: "bg-[#121212]",
                     textColor: "text-white",
                     isDarkTile: true,
@@ -84,6 +93,9 @@ export default function Demos() {
                   <br />
                   connections
                 </h2>
+                <p className="text-sm font-medium opacity-80 text-white mt-1">
+                  by Ameya Agarwal
+                </p>
                 {/* Glass Overlay */}
                 <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/20 group-hover:backdrop-blur-[6px] group-hover:border group-hover:border-zinc-500/60 group-hover:ring-1 group-hover:ring-white/40 group-hover:shadow-lg" />
               </div>
@@ -97,15 +109,20 @@ export default function Demos() {
                   setSelectedDemo({
                     id: "demo-3",
                     title: "demo 3",
+                    author: "Author Name",
+                    filePath: "/demos/demo3.html",
                     bgColor: "bg-[#d9d9d9]",
                     textColor: "text-zinc-900",
                   })
                 }
                 className="group relative flex-1 h-[370px] bg-[#d9d9d9] rounded-[40px] p-8 flex flex-col justify-start cursor-pointer overflow-hidden transition-all duration-300 hover:scale-[1.01] shadow-md"
               >
-                <h2 className="text-3xl font-bold tracking-tight text-white transition-colors duration-300 z-0 group-hover:text-zinc-900">
+                <h2 className="text-3xl font-bold tracking-tight text-zinc-900 transition-colors duration-300 z-0">
                   demo 3
                 </h2>
+                <p className="text-sm font-medium opacity-80 text-zinc-900 mt-1">
+                  by Author Name
+                </p>
                 {/* Glass Overlay */}
                 <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/20 group-hover:backdrop-blur-[6px] group-hover:border group-hover:border-zinc-500/60 group-hover:ring-1 group-hover:ring-white/40 group-hover:shadow-lg" />
               </div>
@@ -116,6 +133,8 @@ export default function Demos() {
                   setSelectedDemo({
                     id: "demo-4",
                     title: "demo 4",
+                    author: "Author Name",
+                    filePath: "/demos/demo4.html",
                     bgColor: "bg-[#6e6e6e]",
                     textColor: "text-white",
                   })
@@ -125,6 +144,9 @@ export default function Demos() {
                 <h2 className="text-3xl font-bold tracking-tight text-white transition-colors duration-300 z-0 group-hover:text-zinc-900">
                   demo 4
                 </h2>
+                <p className="text-sm font-medium opacity-80 text-white mt-1">
+                  by Author Name
+                </p>
                 {/* Glass Overlay */}
                 <div className="absolute inset-0 z-10 pointer-events-none rounded-[40px] bg-white/0 backdrop-blur-none transition-all duration-300 group-hover:bg-white/20 group-hover:backdrop-blur-[6px] group-hover:border group-hover:border-zinc-500/60 group-hover:ring-1 group-hover:ring-white/40 group-hover:shadow-lg" />
               </div>
@@ -135,23 +157,41 @@ export default function Demos() {
 
       {/* Demo View Modal */}
       {selectedDemo && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
-          <div className="bg-white w-[900px] max-h-[85vh] rounded-[40px] p-10 overflow-y-auto shadow-2xl relative border border-zinc-200">
-            <button
-              onClick={() => setSelectedDemo(null)}
-              className="absolute top-8 right-8 text-zinc-400 hover:text-black font-bold text-2xl w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors"
-            >
-              ✕
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-6">
+          <div className="bg-[#121212] w-full max-w-[1000px] h-[85vh] rounded-[32px] p-6 flex flex-col shadow-2xl relative border border-zinc-800">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-800 px-2">
+              <div>
+                <h2 className="text-3xl font-bold text-white tracking-tight">
+                  {selectedDemo.title}
+                </h2>
+                {selectedDemo.author && (
+                  <p className="text-sm font-medium text-zinc-400 mt-1">
+                    by {selectedDemo.author}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => setSelectedDemo(null)}
+                className="text-zinc-400 hover:text-white font-bold text-xl w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800 hover:bg-zinc-700 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
 
-            <h2 className="text-4xl font-bold mb-6 text-zinc-900 border-b pb-4">
-              {selectedDemo.title}
-            </h2>
-
-            <div className="text-zinc-700 text-lg">
-              <p className="italic text-zinc-400">
-                [ Interactive demo application for &quot;{selectedDemo.title}&quot; will load here ]
-              </p>
+            {/* Interactive HTML iFrame Container */}
+            <div className="flex-1 w-full mt-4 rounded-2xl overflow-hidden bg-white border border-zinc-800">
+              {selectedDemo.filePath ? (
+                <iframe
+                  src={selectedDemo.filePath}
+                  className="w-full h-full border-none"
+                  title={selectedDemo.title}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-zinc-500">
+                  No HTML file provided for this demo.
+                </div>
+              )}
             </div>
           </div>
         </div>
