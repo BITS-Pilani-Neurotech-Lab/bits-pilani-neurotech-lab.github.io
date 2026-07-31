@@ -40,6 +40,13 @@ export default function MarkdownModal({
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeRaw, rehypeKatex]}
+            components={{
+              img: ({ node, src, alt, ...props }) => {
+                // Prevent Next.js error by ignoring images with empty or missing src
+                if (!src) return null;
+                return <img src={src} alt={alt || ""} {...props} />;
+              },
+            }}
           >
             {content}
           </ReactMarkdown>
