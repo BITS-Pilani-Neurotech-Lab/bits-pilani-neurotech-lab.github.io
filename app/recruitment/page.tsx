@@ -77,10 +77,36 @@ export default function Recruitment() {
             <div className="w-full bg-[#121212]/90 backdrop-blur-sm rounded-[40px] p-10 text-white shadow-xl flex flex-col justify-between">
               <div>
                 <h2 className="text-3xl font-bold mb-2">Join Neurotech Labs</h2>
-                <p className="text-zinc-400 mb-8 text-base">
+                <p className="text-zinc-400 mb-6 text-base">
                   Select your track and submit your application details below.
                 </p>
 
+                {/* Task Details Placeholder Box */}
+                <div className="w-full bg-zinc-900/60 border border-dashed border-zinc-700/80 rounded-2xl p-8 mb-8 text-center flex flex-col items-center justify-center transition-all hover:border-zinc-500">
+                  <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-3">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-zinc-300 mb-1">
+                    task details coming soon
+                  </h3>
+                  <p className="text-xs text-zinc-500 max-w-sm">
+                    Detailed instructions and requirements for the recruitment tasks will be published here.
+                  </p>
+                </div>
+
+                {/* Track Selector Buttons */}
                 <div className="flex gap-4 mb-8">
                   <button
                     type="button"
