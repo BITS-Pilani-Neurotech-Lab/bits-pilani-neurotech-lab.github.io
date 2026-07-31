@@ -49,7 +49,7 @@ export default function Demos() {
                   setSelectedDemo({
                     id: "cell-free-dna-systems",
                     title: "cell free dna systems",
-                    author: "Author Name",
+                    author: "Ameya Agarwal",
                     filePath: "/demos/cfdna.html",
                     bgColor: "bg-[#6e6e6e]",
                     textColor: "text-white",
