@@ -45,6 +45,13 @@ export default function Home() {
         </video>
       </div>
 
+      {/* Bottom-Right Corner Footnote */}
+      <div className="fixed bottom-5 right-6 z-50 pointer-events-none">
+        <p className="text-[10px] text-zinc-500/80 font-extrabold tracking-tight">
+          developed by Chinmayee Giridhar, Abhinav Bhamidipati
+        </p>
+      </div>
+
       {/* Main Grid Container Layered Above Video */}
       <main
         className="relative z-10 min-h-[1301px] w-[1440px] mx-auto overflow-hidden font-sans"

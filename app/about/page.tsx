@@ -35,6 +35,17 @@ export default function AboutUs() {
               <p className="text-xl text-zinc-300 leading-relaxed max-w-3xl font-normal">
                 We are a community of students passionate about exploring the intersection of neuroscience, cognitive computing, neurotech and biotech. From decoding neural signals and modeling brain circuits to understanding innovative brain-computer interfaces (BCIs), our club serves as a collaborative hub for anyone fascinated by the brain's untapped potential.
               </p>
+            
+             <p className="text-xl text-zinc-300 leading-relaxed max-w-3xl font-normal">
+                 Oh and also some of our members have been invited to present their papers in prestigious conferences, no biggie. 
+            </p> 
+
+            <p className="text-xl text-zinc-300 leading-relaxed max-w-3xl font-normal">
+                 We spend our time building software projects, interactive projects using in-house hardware, learning and understanding relevant concepts with workshops and reading and discussing exciting research papers in the field. We look forward to taking part in biotech competitions of the international level.
+            </p>
+            <p className="text-xl text-zinc-300 leading-relaxed max-w-3xl font-normal">
+               Check out pieces and demos for more!
+               </p>  
             </div>
 
             <div className="pt-8 border-t border-zinc-800">
