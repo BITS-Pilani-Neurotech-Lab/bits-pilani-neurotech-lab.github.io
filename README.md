@@ -4,7 +4,7 @@ This project contains the official website and recruitment portal for **BITS Pil
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS v4, Lucide React
 - **Backend**: Python, Django, Django REST Framework, django-cors-headers
@@ -12,7 +12,7 @@ This project contains the official website and recruitment portal for **BITS Pil
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 neurotech-website/
@@ -37,7 +37,7 @@ neurotech-website/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Frontend Setup (Next.js)
 
@@ -55,33 +55,7 @@ The frontend will be available at [http://localhost:3000](http://localhost:3000)
 
 ---
 
-### 2. Backend Setup (Django)
-
-Navigate to the `backend/` directory, install dependencies, run migrations, and launch the server:
-
-```bash
-# Navigate to backend folder
-cd backend
-
-# Install required Python packages
-pip install -r requirements.txt
-
-# Apply database migrations
-python manage.py migrate
-
-# Create superuser (optional, for admin panel access)
-python manage.py createsuperuser
-
-# Start Django development server on http://localhost:8000
-python manage.py runserver 8000
-```
-
-The backend server will run on [http://localhost:8000](http://localhost:8000).  
-The Django Admin panel is accessible at [http://localhost:8000/admin/](http://localhost:8000/admin/).
-
----
-
-## 🔒 Security & Environment Configuration
+## Security & Environment Configuration
 
 The repository uses a consolidated [.gitignore](file:///.gitignore) to protect sensitive secrets, bytecode, build output, and database instances across both Next.js and Django:
 
