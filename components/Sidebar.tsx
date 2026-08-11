@@ -20,29 +20,28 @@ export default function Sidebar() {
   return (
     <>
       {/* --- MOBILE TOP-LEFT HAMBURGER BUTTON --- */}
-    {/* --- MOBILE TOP-LEFT HAMBURGER BUTTON --- */}
-<div className="md:hidden fixed top-4 left-4 z-[999]">
-  <button
-    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-    className="p-3 rounded-2xl bg-[#121212] border border-zinc-800 text-white shadow-2xl flex items-center justify-center focus:outline-none backdrop-blur-md"
-    aria-label="Toggle navigation menu"
-  >
-    {isMobileMenuOpen ? (
-      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-      </svg>
-    ) : (
-      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-      </svg>
-    )}
-  </button>
-</div>
+      <div className="md:hidden fixed top-4 left-4 z-[999]">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-3 rounded-2xl bg-[#121212]/95 border border-zinc-700/80 text-white shadow-2xl flex items-center justify-center focus:outline-none backdrop-blur-xl"
+          aria-label="Toggle navigation menu"
+        >
+          {isMobileMenuOpen ? (
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+          )}
+        </button>
+      </div>
 
       {/* --- MOBILE OVERLAY DRAWER --- */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6">
-          <div className="w-full max-w-xs bg-[#121212] border border-zinc-800 rounded-[32px] p-8 flex flex-col items-center shadow-2xl">
+        <div className="md:hidden fixed inset-0 z-40 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6">
+          <div className="w-full max-w-xs bg-[#121212]/95 border border-zinc-700/80 rounded-[32px] p-8 flex flex-col items-center shadow-2xl">
             {/* Header Block */}
             <div className="flex flex-col items-center text-center mb-6 w-full">
               <div className="w-20 h-20 rounded-full bg-[#d9d9d9] flex items-center justify-center p-2 mb-3 overflow-hidden shadow-inner">
@@ -116,7 +115,7 @@ export default function Sidebar() {
       )}
 
       {/* --- DESKTOP SIDEBAR CONTAINER --- */}
-      <aside className="hidden md:flex w-[280px] bg-[#121212] rounded-[32px] p-8 flex-col justify-between border border-zinc-800 shadow-xl shrink-0 min-h-[600px]">
+      <aside className="hidden md:flex w-[280px] bg-[#121212]/95 backdrop-blur-xl rounded-[32px] p-8 flex-col justify-between border border-zinc-700/80 shadow-2xl shrink-0 min-h-[600px] z-20">
         
         {/* Top Section: Header + Main Navigation */}
         <div className="flex flex-col items-center">
@@ -175,8 +174,8 @@ export default function Sidebar() {
 
       {/* Contact Pop-up Modal */}
       {isContactOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#121212] border border-zinc-800 w-full max-w-md rounded-[32px] p-8 relative shadow-2xl flex flex-col items-center text-center">
+        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121212]/95 border border-zinc-700/80 w-full max-w-md rounded-[32px] p-8 relative shadow-2xl flex flex-col items-center text-center">
             
             {/* Close Button */}
             <button

@@ -1,5 +1,8 @@
-import Sidebar from "@/components/Sidebar";
 import "./globals.css";
+
+export const metadata = {
+  title: "Bits Pilani Neurotech Labs",
+};
 
 export default function RootLayout({
   children,
@@ -8,18 +11,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-black text-white font-sans antialiased min-h-screen">
-        {/* Background image fixed globally */}
-        <img
-          src="/background.png"
-          alt="Background Pattern"
-          className="fixed inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none"
-        />
+      <body className="bg-black text-white font-sans antialiased min-h-screen overflow-x-hidden">
+        {/* Fixed background layer using MP4 video */}
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover grayscale contrast-120"
+          >
+            <source src="/background.mp4" type="video/mp4" />
+          </video>
+        </div>
 
-        {/* Global responsive wrapper */}
-        <div className="relative z-10 w-full max-w-[1280px] mx-auto p-4 md:p-6 min-h-screen flex flex-col md:flex-row gap-6 items-start">
-          <Sidebar />
-          <main className="flex-1 w-full">{children}</main>
+        {/* Global Page Wrapper */}
+        <div className="relative z-10 min-h-screen w-full">
+          {children}
         </div>
       </body>
     </html>
