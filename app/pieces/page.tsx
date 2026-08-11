@@ -3,22 +3,22 @@
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import MarkdownModal from "@/components/MarkdownModal";
-import { fetchPost } from "@/app/actions/getPost";
 
 interface Piece {
-  id: string; // Used to search for matching .md file in ./content
+  id: string;
   title: string;
-  author: string; 
+  author: string;
   bgColor: string;
   textColor: string;
   isDarkTile?: boolean;
+  content?: string;
 }
 
 const piecesData: Piece[] = [
   {
     id: "2024-06-25-bandpower",
     title: "eeg bandpower",
-    author: "Kedar Athrey", 
+    author: "Kedar Athrey",
     bgColor: "bg-[#121212]",
     textColor: "text-white",
     isDarkTile: true,
@@ -80,17 +80,26 @@ export default function Pieces() {
   } | null>(null);
 
   const handlePieceClick = async (piece: Piece) => {
-    const post = await fetchPost(piece.id);
-
-    if (post) {
-      setActiveModalData({
-        title: post.title || piece.title,
-        content: post.content,
-      });
-    } else {
+    try {
+      // Fetch the raw markdown file statically from the /public or /content directory
+      const res = await fetch(`/content/${piece.id}.md`);
+      
+      if (res.ok) {
+        const text = await res.text();
+        setActiveModalData({
+          title: piece.title,
+          content: text,
+        });
+      } else {
+        setActiveModalData({
+          title: piece.title,
+          content: `*No content found for \`${piece.id}.md\`.*`,
+        });
+      }
+    } catch (error) {
       setActiveModalData({
         title: piece.title,
-        content: `*No content found for \`${piece.id}.md\` in the content folder.*`,
+        content: `*Failed to load content for \`${piece.id}.md\`.*`,
       });
     }
   };

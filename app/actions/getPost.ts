@@ -1,4 +1,4 @@
-"use server";
+
 
 import { getPostBySlug, PostData } from "@/lib/markdown";
 
