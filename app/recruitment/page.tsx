@@ -61,13 +61,11 @@ export default function Recruitment() {
         className="fixed inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none"
       />
 
-      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/40 border-b border-white/20 shadow-sm py-4 mb-[15px] flex justify-center">
-        <div className="w-[1280px] px-2">
-          <h1 className="text-[50px] font-bold text-zinc-800 leading-none tracking-tight">
-            recruitment
-          </h1>
-        </div>
-      </header>
+    <header className="w-full backdrop-blur-md bg-white/10 border border-white/20 shadow-sm py-4 rounded-[20px] md:rounded-[28px] pl-16 pr-6 md:px-8 mb-6">
+  <h1 className="text-2xl md:text-[40px] font-bold text-white leading-none tracking-tight">
+    about us
+  </h1>
+</header>
 
       <div className="relative z-10 w-[1280px]">
         <div className="flex gap-[15px] items-start">

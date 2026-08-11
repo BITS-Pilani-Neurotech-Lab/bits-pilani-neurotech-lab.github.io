@@ -20,23 +20,24 @@ export default function Sidebar() {
   return (
     <>
       {/* --- MOBILE TOP-LEFT HAMBURGER BUTTON --- */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-3 rounded-2xl bg-[#121212] border border-zinc-800 text-white shadow-xl flex items-center justify-center focus:outline-none"
-          aria-label="Toggle navigation menu"
-        >
-          {isMobileMenuOpen ? (
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-            </svg>
-          )}
-        </button>
-      </div>
+    {/* --- MOBILE TOP-LEFT HAMBURGER BUTTON --- */}
+<div className="md:hidden fixed top-4 left-4 z-[999]">
+  <button
+    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+    className="p-3 rounded-2xl bg-[#121212] border border-zinc-800 text-white shadow-2xl flex items-center justify-center focus:outline-none backdrop-blur-md"
+    aria-label="Toggle navigation menu"
+  >
+    {isMobileMenuOpen ? (
+      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+      </svg>
+    ) : (
+      <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+      </svg>
+    )}
+  </button>
+</div>
 
       {/* --- MOBILE OVERLAY DRAWER --- */}
       {isMobileMenuOpen && (
