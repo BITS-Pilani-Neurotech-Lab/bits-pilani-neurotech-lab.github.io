@@ -81,11 +81,15 @@ export default function Pieces() {
 
   const handlePieceClick = async (piece: Piece) => {
     try {
-      // Fetch the raw markdown file statically from the /public or /content directory
-      const res = await fetch(`/content/${piece.id}.md`);
+      // Fetch using relative pathing for static deployment
+      const res = await fetch(`./content/${piece.id}.md`);
       
       if (res.ok) {
-        const text = await res.text();
+        let text = await res.text();
+
+        // Strip out front matter (--- ... ---) at the beginning of the file
+        text = text.replace(/^---[\s\S]*?---\s*/, "");
+
         setActiveModalData({
           title: piece.title,
           content: text,
