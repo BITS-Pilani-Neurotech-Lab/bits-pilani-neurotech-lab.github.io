@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+
 import MarkdownModal from "@/components/MarkdownModal";
 
 interface Piece {
@@ -130,7 +130,7 @@ export default function Pieces() {
       <div className="relative z-10 w-[1280px]">
         <div className="flex gap-[15px] items-start">
           {/* Reusable Sidebar */}
-          <Sidebar />
+        
 
           {/* Articles Stack */}
           <main className="flex-1 flex flex-col gap-[15px]">

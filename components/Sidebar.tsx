@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   // Helper function for active/inactive links
@@ -18,8 +19,103 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Sidebar Container */}
-      <aside className="w-[280px] bg-[#121212] rounded-[32px] p-8 flex flex-col justify-between border border-zinc-800 shadow-xl shrink-0 min-h-[600px]">
+      {/* --- MOBILE TOP-LEFT HAMBURGER BUTTON --- */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-3 rounded-2xl bg-[#121212] border border-zinc-800 text-white shadow-xl flex items-center justify-center focus:outline-none"
+          aria-label="Toggle navigation menu"
+        >
+          {isMobileMenuOpen ? (
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {/* --- MOBILE OVERLAY DRAWER --- */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6">
+          <div className="w-full max-w-xs bg-[#121212] border border-zinc-800 rounded-[32px] p-8 flex flex-col items-center shadow-2xl">
+            {/* Header Block */}
+            <div className="flex flex-col items-center text-center mb-6 w-full">
+              <div className="w-20 h-20 rounded-full bg-[#d9d9d9] flex items-center justify-center p-2 mb-3 overflow-hidden shadow-inner">
+                <img
+                  src="https://c.animaapp.com/2Fdanjhz/img/image-1@2x.png"
+                  alt="BITS Pilani Neurotech Labs logo"
+                  className="w-full h-full object-cover rounded-full mix-blend-multiply"
+                />
+              </div>
+              <h2 className="text-lg font-bold text-white tracking-tight leading-tight">
+                Bits Pilani
+              </h2>
+              <h3 className="text-sm font-semibold text-zinc-300 leading-tight mt-0.5">
+                Neurotech Labs
+              </h3>
+            </div>
+
+            {/* Nav Links */}
+            <nav className="w-full flex flex-col items-center gap-4 mb-6">
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={getLinkClasses("/")}
+              >
+                home
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={getLinkClasses("/about")}
+              >
+                about us
+              </Link>
+              <Link
+                href="/recruitment"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={getLinkClasses("/recruitment")}
+              >
+                recruitment
+              </Link>
+              <Link
+                href="/demos"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={getLinkClasses("/demos")}
+              >
+                demos
+              </Link>
+              <Link
+                href="/pieces"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={getLinkClasses("/pieces")}
+              >
+                pieces
+              </Link>
+            </nav>
+
+            {/* Contact Link */}
+            <div className="w-full pt-4 border-t border-zinc-800/80 flex justify-center">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsContactOpen(true);
+                }}
+                className="text-[17px] font-bold text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5"
+              >
+                contact us ↗
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- DESKTOP SIDEBAR CONTAINER --- */}
+      <aside className="hidden md:flex w-[280px] bg-[#121212] rounded-[32px] p-8 flex-col justify-between border border-zinc-800 shadow-xl shrink-0 min-h-[600px]">
         
         {/* Top Section: Header + Main Navigation */}
         <div className="flex flex-col items-center">
@@ -98,8 +194,6 @@ export default function Sidebar() {
             </p>
 
             <div className="w-full flex flex-col gap-3">
-             
-
               {/* GitHub Link Button */}
               <a
                 href="https://github.com/BITS-Pilani-Neurotech-Lab"
@@ -113,7 +207,7 @@ export default function Sidebar() {
                 Visit GitHub Repository
               </a>
 
-               {/* Email Developers Button */}
+              {/* Email Developers Button */}
               <a
                 href="mailto:f20251296@pilani.bits-pilani.ac.in"
                 className="w-full py-3.5 px-6 rounded-2xl bg-white text-black font-semibold hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 shadow-lg hover:scale-[1.02] active:scale-[0.98]"
@@ -126,7 +220,6 @@ export default function Sidebar() {
                 </svg>
                 Contact Developers
               </a>
-
             </div>
           </div>
         </div>

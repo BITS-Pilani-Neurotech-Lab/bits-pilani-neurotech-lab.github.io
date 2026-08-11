@@ -1,6 +1,6 @@
 "use client";
 
-import Sidebar from "@/components/Sidebar";
+
 
 export default function AboutUs() {
   return (
@@ -24,7 +24,7 @@ export default function AboutUs() {
       {/* Main Container Layered Above Background */}
       <div className="relative z-10 w-[1280px]">
         <div className="flex gap-[15px] items-start">
-          <Sidebar />
+         
 
           {/* About Us Content Area */}
           <main className="flex-1 min-h-[680px] bg-[#121212]/90 backdrop-blur-sm rounded-[40px] p-12 text-white shadow-xl flex flex-col justify-between">

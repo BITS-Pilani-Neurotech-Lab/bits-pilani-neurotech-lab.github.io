@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+
 
 export default function Recruitment() {
   const [name, setName] = useState("");
@@ -71,7 +71,7 @@ export default function Recruitment() {
 
       <div className="relative z-10 w-[1280px]">
         <div className="flex gap-[15px] items-start">
-          <Sidebar />
+       
 
           <main className="flex-1 flex flex-col gap-[15px]">
             <div className="w-full bg-[#121212]/90 backdrop-blur-sm rounded-[40px] p-10 text-white shadow-xl flex flex-col justify-between">

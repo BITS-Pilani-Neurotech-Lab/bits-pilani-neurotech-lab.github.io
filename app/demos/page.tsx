@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+
 
 interface Demo {
   id: string;
@@ -37,7 +37,7 @@ export default function Demos() {
       {/* Main Container Layered Above Background */}
       <div className="relative z-10 w-[1280px]">
         <div className="flex gap-[15px] items-start">
-          <Sidebar />
+        
 
           {/* Asymmetrical Custom Layout Stack */}
           <main className="flex-1 flex flex-col gap-[15px]">
