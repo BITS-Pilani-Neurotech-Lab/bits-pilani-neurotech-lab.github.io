@@ -23,7 +23,7 @@ export default function Recruitment() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/recruitment/apply/",
+        "https://neurotech-website-brown.vercel.app/api/recruitment/apply/",
         {
           method: "POST",
           headers: {
