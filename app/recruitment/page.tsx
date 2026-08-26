@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 export default function Recruitment() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [track, setTrack] = useState<"bio" | "tech">("bio");
   const [portfolio, setPortfolio] = useState("");
   const [sop, setSop] = useState("");
@@ -161,41 +162,55 @@ export default function Recruitment() {
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-zinc-300">
-                  Email Address
+                  BITS Email Address
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  placeholder="id@pilani.bits-pilani.ac.in"
                   className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-zinc-300">
-                  Portfolio / GitHub / Colab Link
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold text-zinc-300">
+                  Colab Link
                 </label>
                 <input
                   type="url"
                   value={portfolio}
                   onChange={(e) => setPortfolio(e.target.value)}
-                  placeholder="https://github.com/username or Colab link"
+                  placeholder="Colab link or .ipynb file"
                   className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-zinc-300">
-                  Statement of Purpose / Task Submission
+                  LLM chat link
                 </label>
                 <textarea
                   required
                   rows={5}
                   value={sop}
                   onChange={(e) => setSop(e.target.value)}
-                  placeholder="Describe your background and response to the track task..."
+                  placeholder="Start a new chat for the task and give us the link to it here"
                   className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500 resize-none"
                 />
               </div>

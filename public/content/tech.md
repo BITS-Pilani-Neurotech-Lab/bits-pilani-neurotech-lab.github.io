@@ -1,5 +1,7 @@
 # Modeling a Spiking Neuron: Parameter Tuning via Numerical Optimization
 
+By Abhinav Bhamidipati • Aug 26, 2026
+
 Real neurons fire in bursts of electrical activity described as a sharp jump in membrane voltage followed by a reset. A single neuron's spiking behavior (how fast it fires, how it recovers between spikes, how it responds to input current) can be captured surprisingly well by a small system of differential equations. For this task we're working with a compact spiking neuron model that uses three differential equations.
 
 ## The model
@@ -34,7 +36,7 @@ The neuron receives a known, fixed step-current pulse — you don't need to infe
 ## Your objective
 
 You'll be given a target voltage trace from a neuron whose five parameters (`a, b, c, d, e`) are unknown to you. First you'll build intuition for what each parameter does by adjusting them by hand and watching how the simulated graph changes. Then you'll recover the parameters properly, using a loss function and a numerical optimizer. Finally, you'll compare what your intuition got right against what the optimizer actually found.
-- [spike_data.csv](https://docs.google.com/spreadsheets/d/1TpCXlW38YJZdZ0F4rtcl0QVbJ4QAXVq9GrymxjqUOeU/edit?usp=sharing)
+
 ---
 
 
@@ -62,8 +64,8 @@ You have to compare the parameters you landed on by hand in Part 2A against the 
 
 ## What you'll be given
 
-- `spike_data.csv` — target voltage graph (time in ms, voltage in mV)
-- `neuron_parameter_recovery.ipynb` — notebook with Part 1 implemented, Parts 2A/2B/3 scaffolded
+- [spike_data.csv](https://docs.google.com/spreadsheets/d/1TpCXlW38YJZdZ0F4rtcl0QVbJ4QAXVq9GrymxjqUOeU/edit?usp=sharing) - target voltage graph (time in ms, voltage in mV)
+- [notebook with Part 1 implemented, Parts 2A/2B/3 scaffolded](/content/recruitment_task.ipynb)
 - The resources listed below
 
 ---

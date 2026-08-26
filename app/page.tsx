@@ -54,11 +54,7 @@ export default function Home() {
             key={index}
             className={`hidden md:block relative rounded-[40px] bg-white/5 backdrop-blur-md border border-white/10 shadow-lg transition-all duration-300 hover:bg-white/10 hover:border-white/25 overflow-hidden group ${tile.desktopClass}`}
           >
-            {/* Small Ambient Glowing Brain Icon */}
-            <div className={`absolute ${tile.iconPosition} flex items-center justify-center pointer-events-none`}>
-              <div className="absolute w-8 h-8 bg-pink-500/30 rounded-full blur-md group-hover:bg-pink-400/50 transition-all duration-300" />
-              <Brain className="relative z-10 w-5 h-5 text-white/40 group-hover:text-white/80 transition-colors duration-300 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
-            </div>
+            
           </div>
         ))}
 
