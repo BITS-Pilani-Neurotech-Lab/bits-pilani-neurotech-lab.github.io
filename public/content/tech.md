@@ -65,7 +65,7 @@ You have to compare the parameters you landed on by hand in Part 2A against the 
 ## What you'll be given
 
 - [spike_data.csv](https://docs.google.com/spreadsheets/d/1TpCXlW38YJZdZ0F4rtcl0QVbJ4QAXVq9GrymxjqUOeU/edit?usp=sharing) - target voltage graph (time in ms, voltage in mV)
-- [notebook with Part 1 implemented, Parts 2A/2B/3 scaffolded](/content/recruitment_task.ipynb)
+- [notebook with Part 1 implemented, Parts 2A/2B/3 scaffolded](/content/neuron_parameter_recovery.ipynb)
 - The resources listed below
 
 ---
