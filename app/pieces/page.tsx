@@ -76,6 +76,7 @@ const piecesData: Piece[] = [
 export default function Pieces() {
   const [activeModalData, setActiveModalData] = useState<{
     title: string;
+    author: string;
     content: string;
   } | null>(null);
 
@@ -92,17 +93,20 @@ export default function Pieces() {
 
         setActiveModalData({
           title: piece.title,
+          author: piece.author,
           content: text,
         });
       } else {
         setActiveModalData({
           title: piece.title,
+          author: piece.author,
           content: `*No content found for \`${piece.id}.md\`.*`,
         });
       }
     } catch (error) {
       setActiveModalData({
         title: piece.title,
+        author: piece.author,
         content: `*Failed to load content for \`${piece.id}.md\`.*`,
       });
     }
@@ -154,6 +158,7 @@ export default function Pieces() {
       {activeModalData && (
         <MarkdownModal
           title={activeModalData.title}
+          author={activeModalData.author}
           content={activeModalData.content}
           onClose={() => setActiveModalData(null)}
         />
