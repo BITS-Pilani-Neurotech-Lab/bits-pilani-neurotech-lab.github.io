@@ -60,6 +60,7 @@ export default function Recruitment() {
           body: JSON.stringify({
             name,
             email,
+            phone,
             track,
             portfolio,
             sop,
@@ -72,6 +73,7 @@ export default function Recruitment() {
         setStatusMessage("Application submitted successfully!");
         setName("");
         setEmail("");
+        setPhone("");
         setPortfolio("");
         setSop("");
       } else {
@@ -139,7 +141,31 @@ export default function Recruitment() {
                 <div className="text-center text-zinc-400 py-4">Loading task details...</div>
               ) : (
                 <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-relaxed space-y-4">
-                  <ReactMarkdown>{taskContent}</ReactMarkdown>
+                  <ReactMarkdown
+                    components={{
+                      a: ({ href, children, ...props }) => {
+                        const isDownloadable =
+                          href?.endsWith(".ipynb") ||
+                          href?.endsWith(".csv") ||
+                          href?.endsWith(".zip");
+
+                        return (
+                          <a
+                            href={href}
+                            {...(isDownloadable
+                              ? { download: true }
+                              : { target: "_blank", rel: "noopener noreferrer" })}
+                            className="text-white underline hover:text-zinc-300 font-semibold"
+                            {...props}
+                          >
+                            {children}
+                          </a>
+                        );
+                      },
+                    }}
+                  >
+                    {taskContent}
+                  </ReactMarkdown>
                 </article>
               )}
             </div>
@@ -190,28 +216,14 @@ export default function Recruitment() {
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-zinc-300">
-                  Colab Link
+                  Submission Link
                 </label>
                 <input
                   type="url"
                   value={portfolio}
                   onChange={(e) => setPortfolio(e.target.value)}
-                  placeholder="Colab link or .ipynb file"
+                  placeholder="Put your Colab notebook and LLM chat history link in a folder and give us the Google drive link"
                   className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-zinc-300">
-                  LLM chat link
-                </label>
-                <textarea
-                  required
-                  rows={5}
-                  value={sop}
-                  onChange={(e) => setSop(e.target.value)}
-                  placeholder="Start a new chat for the task and give us the link to it here"
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500 resize-none"
                 />
               </div>
 
