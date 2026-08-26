@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Bits Pilani Neurotech Labs",
+  title: "BITS Pilani Neurotech Labs",
 };
 
 export default function RootLayout({

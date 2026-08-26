@@ -52,7 +52,7 @@ export default function Sidebar() {
                 />
               </div>
               <h2 className="text-lg font-bold text-white tracking-tight leading-tight">
-                Bits Pilani
+                BITS Pilani
               </h2>
               <h3 className="text-sm font-semibold text-zinc-300 leading-tight mt-0.5">
                 Neurotech Labs

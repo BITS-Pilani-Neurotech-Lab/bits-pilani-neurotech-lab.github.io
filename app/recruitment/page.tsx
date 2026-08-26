@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SubpageLayout from "@/components/SubpageLayout";
+import ReactMarkdown from "react-markdown";
 
 export default function Recruitment() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [track, setTrack] = useState("tech");
+  const [track, setTrack] = useState<"bio" | "tech">("bio");
   const [portfolio, setPortfolio] = useState("");
   const [sop, setSop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,6 +15,32 @@ export default function Recruitment() {
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
     null
   );
+
+  // Markdown task content states
+  const [taskContent, setTaskContent] = useState<string>("");
+  const [isLoadingTask, setIsLoadingTask] = useState<boolean>(true);
+
+  // Fetch the active track's markdown file from /public/content/
+  useEffect(() => {
+    async function fetchTaskMarkdown() {
+      setIsLoadingTask(true);
+      try {
+        const res = await fetch(`/content/${track}.md`);
+        if (res.ok) {
+          const text = await res.text();
+          setTaskContent(text);
+        } else {
+          setTaskContent("Failed to load task instructions.");
+        }
+      } catch (err) {
+        setTaskContent("Error fetching task details.");
+      } finally {
+        setIsLoadingTask(false);
+      }
+    }
+
+    fetchTaskMarkdown();
+  }, [track]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +87,6 @@ export default function Recruitment() {
 
   return (
     <SubpageLayout>
-      
       {/* Header Banner */}
       <header className="relative z-10 w-full backdrop-blur-md bg-white/10 border border-white/20 shadow-sm py-4 rounded-[20px] md:rounded-[28px] pl-16 pr-6 md:px-8 mb-6">
         <h1 className="text-2xl md:text-[40px] font-bold text-white leading-none tracking-tight">
@@ -76,37 +102,11 @@ export default function Recruitment() {
               Join Neurotech Labs
             </h2>
             <p className="text-zinc-400 mb-6 text-sm md:text-base">
-              Select your track and submit your application details below.
+              Select your track below to read the recruitment task details and submit your application.
             </p>
 
-            {/* Task Details Placeholder Box */}
-            <div className="w-full bg-zinc-900/60 border border-dashed border-zinc-700/80 rounded-2xl p-6 md:p-8 mb-8 text-center flex flex-col items-center justify-center transition-all hover:border-zinc-500">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-3">
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-base md:text-lg font-semibold text-zinc-300 mb-1">
-                task details coming soon
-              </h3>
-              <p className="text-xs text-zinc-500 max-w-sm">
-                Detailed instructions and requirements for the recruitment
-                tasks will be published here.
-              </p>
-            </div>
-
             {/* Track Selector Buttons */}
-            <div className="flex gap-3 md:gap-4 mb-8">
+            <div className="flex gap-3 md:gap-4 mb-6">
               <button
                 type="button"
                 onClick={() => setTrack("bio")}
@@ -132,6 +132,18 @@ export default function Recruitment() {
               </button>
             </div>
 
+            {/* Rendered Task Details Box */}
+            <div className="w-full bg-zinc-900/80 border border-zinc-700/80 rounded-2xl p-6 md:p-8 mb-8 text-left transition-all">
+              {isLoadingTask ? (
+                <div className="text-center text-zinc-400 py-4">Loading task details...</div>
+              ) : (
+                <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-relaxed space-y-4">
+                  <ReactMarkdown>{taskContent}</ReactMarkdown>
+                </article>
+              )}
+            </div>
+
+            {/* Application Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-zinc-300">
@@ -193,7 +205,7 @@ export default function Recruitment() {
                 disabled={isSubmitting}
                 className="mt-4 bg-white text-black font-bold py-3 md:py-4 rounded-xl hover:bg-zinc-200 transition-colors disabled:opacity-50"
               >
-                {isSubmitting ? "Submitting..." : "Submit Application"}
+                {isSubmitting ? "Submitting..." : `Submit ${track.toUpperCase()} Track Application`}
               </button>
 
               {statusMessage && (

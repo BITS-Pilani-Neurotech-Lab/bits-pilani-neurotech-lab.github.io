@@ -48,40 +48,14 @@ export default function Home() {
         </video>
       </div>
 
-      {/* Bottom-Right Corner Footnote */}
-      <div className="fixed bottom-3 right-4 md:bottom-5 md:right-6 z-50 pointer-events-none">
-        <p className="text-[9px] md:text-[10px] text-zinc-500/80 font-extrabold tracking-tight">
-          developed by Chinmayee Giridhar, Abhinav Bhamidipati
-        </p>
-      </div>
 
       {/* Main Grid Container Layered Above Video */}
       <main
         className="relative z-10 w-full max-w-[1440px] mx-auto min-h-screen md:min-h-[1301px] p-4 md:p-0 font-sans flex flex-col md:block gap-4"
         aria-label="Neurotech Labs, BITS Pilani"
       >
-        {/* --- Doodles --- */}
-        {/* Doodle 1 */}
-        <img
-          src={illustrationCards[0].src}
-          alt={illustrationCards[0].alt}
-          className={`w-full h-[180px] sm:h-[220px] rounded-[28px] md:rounded-[40px] object-cover object-right-top ${illustrationCards[0].desktopClass} ${illustrationCards[0].mobileOrder}`}
-        />
-
-        {/* Doodle 2 */}
-        <img
-          src={illustrationCards[1].src}
-          alt={illustrationCards[1].alt}
-          className={`w-full h-[220px] sm:h-[300px] rounded-[28px] md:rounded-[40px] object-cover object-top ${illustrationCards[1].desktopClass} ${illustrationCards[1].mobileOrder}`}
-        />
-
-        {/* Doodle 3 */}
-        <img
-          src={illustrationCards[2].src}
-          alt={illustrationCards[2].alt}
-          className={`w-full h-[220px] sm:h-[300px] rounded-[28px] md:rounded-[40px] object-cover object-left-top ${illustrationCards[2].desktopClass} ${illustrationCards[2].mobileOrder}`}
-        />
-
+        
+        
         {/* --- Interactive Navigation Tiles --- */}
 
         {/* "hi!" intro tile */}
