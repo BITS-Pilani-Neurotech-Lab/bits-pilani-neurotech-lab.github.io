@@ -38,7 +38,7 @@ export default function Home() {
           playsInline
           className="w-full h-full object-cover opacity-90 grayscale contrast-125 brightness-110"
         >
-          <source src="/background.mp4" type="video/mp4" />
+          <source src="/new_bg.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
