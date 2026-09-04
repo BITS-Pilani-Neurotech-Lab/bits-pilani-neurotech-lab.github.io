@@ -5,17 +5,7 @@ import SubpageLayout from "@/components/SubpageLayout";
 import ReactMarkdown from "react-markdown";
 
 export default function Recruitment() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [track, setTrack] = useState<"bio" | "tech">("bio");
-  const [portfolio, setPortfolio] = useState("");
-  const [sop, setSop] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
-  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
-    null
-  );
 
   // Markdown task content states
   const [taskContent, setTaskContent] = useState<string>("");
@@ -43,51 +33,6 @@ export default function Recruitment() {
     fetchTaskMarkdown();
   }, [track]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setStatusMessage("");
-    setSubmitStatus(null);
-
-    try {
-      const response = await fetch(
-        "https://neurotech-website-brown.vercel.app/api/recruitment/apply/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            phone,
-            track,
-            portfolio,
-            sop,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        setSubmitStatus("success");
-        setStatusMessage("Application submitted successfully!");
-        setName("");
-        setEmail("");
-        setPhone("");
-        setPortfolio("");
-        setSop("");
-      } else {
-        setSubmitStatus("error");
-        setStatusMessage("Submission failed. Please check your inputs.");
-      }
-    } catch (error) {
-      setSubmitStatus("error");
-      setStatusMessage("Could not connect to the backend server.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <SubpageLayout>
       {/* Header Banner */}
@@ -97,7 +42,7 @@ export default function Recruitment() {
         </h1>
       </header>
 
-      {/* Main Content Form Card */}
+      {/* Main Content Card */}
       <main className="relative z-10 w-full flex flex-col gap-[15px]">
         <div className="w-full bg-[#121212]/90 backdrop-blur-sm rounded-[28px] md:rounded-[40px] p-6 md:p-10 text-white shadow-xl flex flex-col justify-between border border-white/10">
           <div>
@@ -105,7 +50,7 @@ export default function Recruitment() {
               Join Neurotech Labs
             </h2>
             <p className="text-zinc-400 mb-6 text-sm md:text-base">
-              Select your track below to read the recruitment task details and submit your application.
+              Select your track below to read the recruitment task details and download resources.
             </p>
 
             {/* Track Selector Buttons */}
@@ -170,83 +115,15 @@ export default function Recruitment() {
               )}
             </div>
 
-            {/* Application Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-zinc-300">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-zinc-300">
-                  BITS Email Address
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="id@pilani.bits-pilani.ac.in"
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-zinc-300">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-zinc-300">
-                  Submission Link
-                </label>
-                <input
-                  type="url"
-                  value={portfolio}
-                  onChange={(e) => setPortfolio(e.target.value)}
-                  placeholder="Put your Colab notebook and LLM chat history link in a folder and give us the Google drive link"
-                  className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="mt-4 bg-white text-black font-bold py-3 md:py-4 rounded-xl hover:bg-zinc-200 transition-colors disabled:opacity-50"
-              >
-                {isSubmitting ? "Submitting..." : `Submit ${track.toUpperCase()} Track Application`}
-              </button>
-
-              {statusMessage && (
-                <div
-                  className={`p-4 rounded-xl text-center text-sm font-medium ${
-                    submitStatus === "success"
-                      ? "bg-emerald-950/80 text-emerald-300 border border-emerald-800"
-                      : "bg-rose-950/80 text-rose-300 border border-rose-800"
-                  }`}
-                >
-                  {statusMessage}
-                </div>
-              )}
-            </form>
+            {/* Submissions Closed Notice */}
+            <div className="p-6 md:p-8 bg-zinc-900/90 border border-zinc-800 rounded-2xl text-center flex flex-col items-center gap-2">
+              <span className="text-zinc-300 font-semibold text-lg md:text-xl flex items-center gap-2">
+                🔒︎ Submissions are currently closed
+              </span>
+              <p className="text-zinc-400 text-sm md:text-base max-w-lg">
+                Applications for this recruitment cycle are no longer being accepted. You are welcome to explore the task materials and download assets above for reference.
+              </p>
+            </div>
           </div>
         </div>
       </main>
